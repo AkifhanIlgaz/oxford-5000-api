@@ -27,10 +27,14 @@ func ConnectToMongo() MongoClient {
 	return MongoClient{Client: client}
 }
 
-func (m MongoClient) GetDatabase(databaseName string) *mongo.Database {
+func (m MongoClient) getDatabase(databaseName string) *mongo.Database {
 	return m.Client.Database(databaseName)
 }
 
-func (m MongoClient) GetCollection(databaseName, collectionName string) *mongo.Collection {
+func (m MongoClient) getCollection(databaseName, collectionName string) *mongo.Collection {
 	return m.Client.Database(databaseName).Collection(collectionName)
+}
+
+func (m MongoClient) GetWordsCollection() *mongo.Collection {
+	return m.getCollection("Oxford5000", "Words")
 }
