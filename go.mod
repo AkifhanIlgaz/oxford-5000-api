@@ -1,4 +1,4 @@
-module github.com/AkifhanIlgaz/oxford-5000-api
+module github.com/AkifhanIlgaz/dictionary-api
 
 go 1.20
 
