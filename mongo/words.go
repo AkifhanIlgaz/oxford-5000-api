@@ -40,7 +40,7 @@ func GetWord(collection *mongo.Collection, word string, partOfSpeech ...string) 
 	var result Word
 	filter := bson.M{"word": word}
 
-	if len(partOfSpeech) != 1 {
+	if len(partOfSpeech) == 1 {
 		filter = bson.M{"word": word, "partofspeech": partOfSpeech[0]}
 	} else {
 		if len(partOfSpeech) > 1 {
