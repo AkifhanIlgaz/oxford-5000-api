@@ -7,12 +7,17 @@ import (
 )
 
 type Config struct {
-	MongoURI string `mapstructure:"MONGO_URI"`
+	MongoURI                     string `mapstructure:"MONGO_URI"`
+	GoogleApplicationCredentials string `mapstructure:"GOOGLE_APPLICATION_CREDENTIALS"`
 }
 
 func (c *Config) Validate() error {
 	if c.MongoURI == "" {
 		return fmt.Errorf("MONGO_URI is required")
+	}
+
+	if c.GoogleApplicationCredentials == "" {
+		return fmt.Errorf("GOOGLE_APPLICATION_CREDENTIALS is required")
 	}
 
 	return nil
