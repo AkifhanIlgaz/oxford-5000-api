@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/AkifhanIlgaz/dictionary-api/config"
+	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/firebase"
 )
@@ -34,11 +35,12 @@ func main() {
 		log.Fatal("auth", err)
 	}
 
-	user, err := auth.GetUser(ctx, "bmK5ommUPRRyxVsjKEpFD0KQlKp2")
-	if err != nil {
-		log.Fatal("user", err)
-	}
+	_ = auth
 
-	fmt.Println(user)
+	mongoDatabase := mongoClient.Database(db.DatabaseName)
+
+	wordService := services.NewWordService(ctx, mongoDatabase)
+
+	fmt.Println(wordService)
 
 }
