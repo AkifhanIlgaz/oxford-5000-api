@@ -2,7 +2,9 @@ package config
 
 import (
 	"fmt"
+	"path/filepath"
 
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
@@ -19,6 +21,17 @@ func (c *Config) Validate() error {
 	if c.GoogleApplicationCredentials == "" {
 		return fmt.Errorf("GOOGLE_APPLICATION_CREDENTIALS is required")
 	}
+
+	home, err := homedir.Dir()
+	if err != nil {
+		return fmt.Errorf("validate config: %w", err)
+	}
+
+	fullPath := filepath.Join(home, c.GoogleApplicationCredentials)
+
+	fmt.Println(fullPath)
+
+	c.GoogleApplicationCredentials = fullPath
 
 	return nil
 }
