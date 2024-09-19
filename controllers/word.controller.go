@@ -24,7 +24,6 @@ func NewWordController(wordService services.WordService) WordController {
 // TODO: Postman ile test et
 // TODO: Response functions
 func (controller WordController) GetWord(ctx *gin.Context) {
-
 	searchBy := ctx.Query(api.SearchByQueryParam)
 	value := ctx.Query(api.ValueQueryParam)
 	switch searchBy {

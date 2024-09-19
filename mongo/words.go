@@ -85,7 +85,6 @@ func DeleteWord(collection *mongo.Collection, word string) {
 	fmt.Println(result)
 }
 
-//	 TODO:
 //		- Check if the word exists
 //		- If it does, delete it
 //		- Add the new word
