@@ -54,11 +54,8 @@ func main() {
 	wordController.SetupRoutes(router)
 	boxController.SetupRoutes(router)
 
-	// TODO: Get port from Config file Dev - Prod
-
 	err = server.Run(":" + config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
