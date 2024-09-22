@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"fmt"
 	"path/filepath"
 
@@ -11,6 +12,7 @@ import (
 type Config struct {
 	MongoURI                     string `mapstructure:"MONGO_URI"`
 	GoogleApplicationCredentials string `mapstructure:"GOOGLE_APPLICATION_CREDENTIALS"`
+	Mode                         string
 }
 
 func (c *Config) Validate() error {
@@ -35,8 +37,12 @@ func (c *Config) Validate() error {
 func Load() (Config, error) {
 	var config Config
 
-	viper.SetConfigFile("app.env")
-	viper.SetConfigType("env")
+	flag.StringVar(&config.Mode, "mode", "dev", "App mode: dev (default), prod")
+	flag.Parse()
+
+	configFile := envFile(config.Mode)
+
+	viper.SetConfigFile(configFile)
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -53,4 +59,13 @@ func Load() (Config, error) {
 	}
 
 	return config, nil
+}
+
+func envFile(mode string) string {
+	switch mode {
+	case devMode, prodMode:
+		return mode + ".env"
+	default:
+		return ""
+	}
 }
