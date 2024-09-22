@@ -1,12 +1,14 @@
 package controllers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/api"
+	"github.com/AkifhanIlgaz/dictionary-api/utils/message"
+	"github.com/AkifhanIlgaz/dictionary-api/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,27 +40,31 @@ func (controller WordController) GetWord(ctx *gin.Context) {
 	case api.SearchById:
 		word, err := controller.wordService.GetById(value)
 		if err != nil {
-			fmt.Println(err)
-			ctx.AbortWithError(http.StatusInternalServerError, err)
+			log.Println(err.Error())
+			response.WithError(ctx, http.StatusInternalServerError, err.Error())
+			return
 		}
-		ctx.JSON(http.StatusOK, &word)
 
+		response.WithSuccess(ctx, http.StatusOK, message.WordFound, word)
 	case api.SearchByIndex:
 		index, err := strconv.Atoi(value)
 		if err != nil {
-			fmt.Println(err)
-			ctx.AbortWithError(http.StatusBadRequest, err)
+			log.Println(err.Error())
+			response.WithError(ctx, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		word, err := controller.wordService.GetByIndex(index)
 		if err != nil {
-			fmt.Println(err)
-			ctx.AbortWithError(http.StatusInternalServerError, err)
+			log.Println(err.Error())
+			response.WithError(ctx, http.StatusInternalServerError, err.Error())
+			return
 		}
-		ctx.JSON(http.StatusOK, &word)
+
+		response.WithSuccess(ctx, http.StatusOK, message.WordFound, word)
 	default:
-		// TODO: Error constant
-		ctx.AbortWithError(http.StatusInternalServerError, fmt.Errorf("unsupported search value"))
+		log.Println(message.UnsupportedSearchValue)
+		response.WithError(ctx, http.StatusInternalServerError, message.UnsupportedSearchValue)
 	}
 
 }
