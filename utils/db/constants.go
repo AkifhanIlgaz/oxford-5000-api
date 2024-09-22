@@ -6,5 +6,5 @@ const (
 
 const (
 	WordsCollection   string = "words"
-	BoxLogsCollection string = "box_logs"
+	BoxLogsCollection string = "box_actions"
 )

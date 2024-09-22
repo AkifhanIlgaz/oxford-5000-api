@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const WordsPath = "/words"
+
 type WordController struct {
 	wordService services.WordService
 }
@@ -21,7 +23,11 @@ func NewWordController(wordService services.WordService) WordController {
 }
 
 func (controller WordController) SetupRoutes(rg *gin.RouterGroup) {
+	router := rg.Group(WordsPath)
 
+	// GET /documents?field=id&value=123
+	// GET /documents?field=index&value=123
+	router.GET("/", controller.GetWord)
 }
 
 // TODO: Response functions
