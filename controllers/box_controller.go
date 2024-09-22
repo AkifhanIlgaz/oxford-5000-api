@@ -46,6 +46,5 @@ func (controller BoxController) Action(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: Message module
 	response.WithSuccess(ctx, http.StatusOK, "success", nil)
 }

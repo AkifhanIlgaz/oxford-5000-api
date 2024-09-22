@@ -6,6 +6,7 @@ import (
 
 	"github.com/AkifhanIlgaz/dictionary-api/config"
 	"github.com/AkifhanIlgaz/dictionary-api/controllers"
+	"github.com/AkifhanIlgaz/dictionary-api/middlewares"
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/firebase"
@@ -41,15 +42,20 @@ func main() {
 
 	wordService := services.NewWordService(ctx, mongoDatabase)
 	boxService := services.NewBoxService(ctx, mongoDatabase)
-
+	userService := services.NewUserService(auth)
 	// TODO: Initialize services with indexes ?
 
 	wordController := controllers.NewWordController(wordService)
 	boxController := controllers.NewBoxController(boxService)
 
+	userMiddleware := middlewares.NewUserMiddleware(userService)
+
 	server := gin.Default()
 
 	router := server.Group("/api")
+
+	// TODO: Add option functions to restrict access to the endpoints ?
+	router.Use(userMiddleware.GetUserFromIdToken())
 
 	wordController.SetupRoutes(router)
 	boxController.SetupRoutes(router)
