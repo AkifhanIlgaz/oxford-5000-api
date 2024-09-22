@@ -5,5 +5,6 @@ const (
 )
 
 const (
-	WordsCollection string = "words"
+	WordsCollection   string = "words"
+	BoxLogsCollection string = "box_logs"
 )

@@ -27,11 +27,7 @@ func (c *Config) Validate() error {
 		return fmt.Errorf("validate config: %w", err)
 	}
 
-	fullPath := filepath.Join(home, c.GoogleApplicationCredentials)
-
-	fmt.Println(fullPath)
-
-	c.GoogleApplicationCredentials = fullPath
+	c.GoogleApplicationCredentials = filepath.Join(home, c.GoogleApplicationCredentials)
 
 	return nil
 }

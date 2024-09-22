@@ -20,8 +20,10 @@ func NewWordController(wordService services.WordService) WordController {
 	}
 }
 
-// TODO: Id ve index için aynı controller'ı kullan
-// TODO: Postman ile test et
+func (controller WordController) SetupRoutes(rg *gin.RouterGroup) {
+
+}
+
 // TODO: Response functions
 func (controller WordController) GetWord(ctx *gin.Context) {
 	searchBy := ctx.Query(api.SearchByQueryParam)

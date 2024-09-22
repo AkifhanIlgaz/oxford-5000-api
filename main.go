@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/AkifhanIlgaz/dictionary-api/config"
+	"github.com/AkifhanIlgaz/dictionary-api/controllers"
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/firebase"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -40,7 +41,24 @@ func main() {
 	mongoDatabase := mongoClient.Database(db.DatabaseName)
 
 	wordService := services.NewWordService(ctx, mongoDatabase)
+	boxService := services.NewBoxService(ctx, mongoDatabase)
 
-	fmt.Println(wordService)
+	// TODO: Initialize services with indexes ?
+
+	wordController := controllers.NewWordController(wordService)
+	boxController := controllers.NewBoxController(boxService)
+
+	server := gin.Default()
+
+	router := server.Group("/api")
+
+	wordController.SetupRoutes(router)
+	boxController.SetupRoutes(router)
+
+	// TODO: Get port from Config file Dev - Prod
+	err = server.Run(":3000")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
