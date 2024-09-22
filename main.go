@@ -17,7 +17,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	ctx := context.TODO()
 
 	mongoClient, err := db.Connect(ctx, config)
@@ -56,7 +55,8 @@ func main() {
 	boxController.SetupRoutes(router)
 
 	// TODO: Get port from Config file Dev - Prod
-	err = server.Run(":3000")
+
+	err = server.Run(":" + config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}

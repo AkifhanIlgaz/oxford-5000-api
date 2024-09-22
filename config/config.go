@@ -12,6 +12,7 @@ import (
 type Config struct {
 	MongoURI                     string `mapstructure:"MONGO_URI"`
 	GoogleApplicationCredentials string `mapstructure:"GOOGLE_APPLICATION_CREDENTIALS"`
+	Port                         string `mapstructure:"PORT"`
 	Mode                         string
 }
 
