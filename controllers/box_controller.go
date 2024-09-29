@@ -30,7 +30,6 @@ func (controller BoxController) SetupRoutes(rg *gin.RouterGroup) {
 }
 
 func (controller BoxController) Action(ctx *gin.Context) {
-
 	user, err := middlewares.GetUserFromContext(ctx)
 	if err != nil {
 		log.Println(err.Error())
@@ -38,7 +37,6 @@ func (controller BoxController) Action(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, &user)
 	var boxActionRequest models.BoxActionRequest
 
 	if err := ctx.ShouldBindJSON(&boxActionRequest); err != nil {
@@ -46,6 +44,7 @@ func (controller BoxController) Action(ctx *gin.Context) {
 		response.WithError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+	boxActionRequest.Uid = user.UID
 
 	err = controller.boxService.Action(boxActionRequest)
 	if err != nil {

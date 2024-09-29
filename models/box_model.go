@@ -9,8 +9,8 @@ import (
 // TODO: LastAction için enum kullan
 type BoxAction struct {
 	Id         primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Uid        primitive.ObjectID `json:"uid" bson:"uid"`
-	WordId     primitive.ObjectID `json:"wordId" bson:"wordId"`
+	Uid        string             `json:"uid" bson:"uid"`
+	WordId     string             `json:"wordId" bson:"wordId"`
 	Level      int                `json:"level" bson:"level"`
 	LastAction string             `json:"lastAction" bson:"lastAction"`
 	LastUpdate time.Time          `json:"lastUpdate" bson:"lastUpdate"`
