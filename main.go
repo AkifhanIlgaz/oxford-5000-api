@@ -42,8 +42,7 @@ func main() {
 
 	wordService := services.NewWordService(ctx, mongoDatabase)
 	boxService := services.NewBoxService(ctx, mongoDatabase)
-	userService := services.NewUserService(auth)
-	// TODO: Initialize services with indexes ?
+	userService := services.NewUserService(ctx, auth)
 
 	wordController := controllers.NewWordController(wordService)
 	boxController := controllers.NewBoxController(boxService)

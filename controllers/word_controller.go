@@ -32,7 +32,6 @@ func (controller WordController) SetupRoutes(rg *gin.RouterGroup) {
 	router.GET("/", controller.GetWord)
 }
 
-// TODO: Response functions
 func (controller WordController) GetWord(ctx *gin.Context) {
 	searchBy := ctx.Query(api.SearchByQueryParam)
 	value := ctx.Query(api.ValueQueryParam)
