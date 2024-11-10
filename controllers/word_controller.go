@@ -38,12 +38,14 @@ func (controller WordController) GetWord(ctx *gin.Context) {
 	if err := models.IsValidPartOfSpeech(partOfSpeech); err != nil {
 		log.Println(err.Error())
 		response.WithError(ctx, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	wordInfo, err := controller.wordService.GetByName(word, partOfSpeech)
 	if err != nil {
 		log.Println(err.Error())
 		response.WithError(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	response.WithSuccess(ctx, http.StatusOK, message.WordFound, wordInfo)

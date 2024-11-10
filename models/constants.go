@@ -7,6 +7,7 @@ import (
 	"github.com/AkifhanIlgaz/dictionary-api/utils/message"
 )
 
+// Empty string is considered valid
 var PartOfSpeeches = []string{
 	"adjective",
 	"adverb",
@@ -21,12 +22,14 @@ var PartOfSpeeches = []string{
 	"modal verb",
 	"auxiliary verb",
 	"indefinite article",
+	"",
 }
 
 func IsValidPartOfSpeech(partOfSpeech string) error {
 	if !slices.Contains(PartOfSpeeches, partOfSpeech) {
 		return errors.New(message.UnsupportedPartOfSpeech)
 	}
+
 	return nil
 }
 
