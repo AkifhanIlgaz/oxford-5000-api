@@ -3,7 +3,6 @@ package middlewares
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/api"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/message"
-	"github.com/AkifhanIlgaz/dictionary-api/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,27 +20,6 @@ type UserMiddleware struct {
 func NewUserMiddleware(userService services.UserService) UserMiddleware {
 	return UserMiddleware{
 		userService: userService,
-	}
-}
-
-func (middleware UserMiddleware) GetUserFromIdToken() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		idToken, err := parseIdTokenFromHeader(ctx.Request.Header)
-		if err != nil {
-			log.Println(err.Error())
-			response.WithError(ctx, http.StatusUnauthorized, err.Error())
-			return
-		}
-
-		user, err := middleware.userService.GetUserFromIdToken(idToken)
-		if err != nil {
-			log.Println(err.Error())
-			response.WithError(ctx, http.StatusUnauthorized, err.Error())
-			return
-		}
-
-		ctx.Set(api.ContextUser, user)
-		ctx.Next()
 	}
 }
 

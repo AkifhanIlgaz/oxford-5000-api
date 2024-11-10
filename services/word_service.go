@@ -43,17 +43,20 @@ func (service WordService) GetById(wordId string) (models.WordInfo, error) {
 	return word, nil
 }
 
-func (service WordService) GetByIndex(wordIndex int) (models.WordInfo, error) {
-
+func (service WordService) GetByName(wordName string, partOfSpeech string) (models.WordInfo, error) {
 	filter := bson.M{
-		"index": wordIndex,
+		"word": wordName,
+	}
+
+	if partOfSpeech != "" {
+		filter["header.partOfSpeech"] = partOfSpeech
 	}
 
 	var word models.WordInfo
 
 	err := service.collection.FindOne(service.ctx, filter).Decode(&word)
 	if err != nil {
-		return models.WordInfo{}, fmt.Errorf("get word by index: %w", err)
+		return models.WordInfo{}, fmt.Errorf("get word by name: %w", err)
 	}
 
 	return word, nil

@@ -5,5 +5,5 @@ const (
 )
 
 const (
-	UnsupportedSearchValue string = "Unsupported search value"
+	UnsupportedPartOfSpeech string = "unsupported part of speech"
 )

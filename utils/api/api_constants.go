@@ -1,13 +1,9 @@
 package api
 
-const (
-	SearchByQueryParam string = "searchBy"
-	ValueQueryParam    string = "value"
-)
 
 const (
-	SearchById    string = "id"
-	SearchByIndex string = "index"
+	WordParam         string = "word"
+	PartOfSpeechParam string = "part_of_speech"
 )
 
 const (

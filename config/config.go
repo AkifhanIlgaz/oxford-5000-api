@@ -3,34 +3,20 @@ package config
 import (
 	"flag"
 	"fmt"
-	"path/filepath"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	MongoURI                     string `mapstructure:"MONGO_URI"`
-	GoogleApplicationCredentials string `mapstructure:"GOOGLE_APPLICATION_CREDENTIALS"`
-	Port                         string `mapstructure:"PORT"`
-	Mode                         string
+	MongoURI string `mapstructure:"MONGO_URI"`
+	Port     string `mapstructure:"PORT"`
+	Mode     string
 }
 
 func (c *Config) Validate() error {
 	if c.MongoURI == "" {
 		return fmt.Errorf("MONGO_URI is required")
 	}
-
-	if c.GoogleApplicationCredentials == "" {
-		return fmt.Errorf("GOOGLE_APPLICATION_CREDENTIALS is required")
-	}
-
-	home, err := homedir.Dir()
-	if err != nil {
-		return fmt.Errorf("validate config: %w", err)
-	}
-
-	c.GoogleApplicationCredentials = filepath.Join(home, c.GoogleApplicationCredentials)
 
 	return nil
 }
