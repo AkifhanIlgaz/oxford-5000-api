@@ -36,7 +36,7 @@ func main() {
 	userService := services.NewUserService(ctx)
 
 	wordController := controllers.NewWordController(wordService)
-
+	userController := controllers.NewUserController(userService)
 	userMiddleware := middlewares.NewUserMiddleware(userService)
 
 	_ = userMiddleware
