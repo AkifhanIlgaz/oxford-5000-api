@@ -5,6 +5,6 @@ const (
 )
 
 const (
-	WordsCollection   string = "words"
-	BoxLogsCollection string = "box_actions"
+	UsersCollection string = "users"
+	WordsCollection string = "words"
 )
