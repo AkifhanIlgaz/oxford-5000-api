@@ -34,8 +34,14 @@ func main() {
 
 	wordService := services.NewWordService(ctx, mongoDatabase)
 	userService := services.NewUserService(ctx)
+	tokenService := services.NewTokenService(config)
+	authService, err := services.NewAuthService(ctx, mongoDatabase)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	wordController := controllers.NewWordController(wordService)
+	authController := controllers.NewAuthController(authService, tokenService)
 	userController := controllers.NewUserController(userService)
 	userMiddleware := middlewares.NewUserMiddleware(userService)
 
@@ -46,6 +52,8 @@ func main() {
 	router := server.Group("/api")
 
 	wordController.SetupRoutes(router)
+	authController.SetupRoutes(router)
+	userController.SetupRoutes(router)
 
 	err = server.Run(":" + config.Port)
 	if err != nil {

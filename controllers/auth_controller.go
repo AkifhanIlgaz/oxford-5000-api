@@ -14,12 +14,14 @@ import (
 const AuthPath string = "/auth"
 
 type AuthController struct {
-	authService services.AuthService
+	authService  services.AuthService
+	tokenService services.TokenService
 }
 
-func NewAuthController(authService services.AuthService) AuthController {
+func NewAuthController(authService services.AuthService, tokenService services.TokenService) AuthController {
 	return AuthController{
-		authService: authService,
+		authService:  authService,
+		tokenService: tokenService,
 	}
 }
 
@@ -53,7 +55,24 @@ func (controller AuthController) Signup(ctx *gin.Context) {
 		return
 	}
 
+	accessToken, err := controller.tokenService.GenerateToken("access", uid.Hex())
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
 
+	refreshToken, err := controller.tokenService.GenerateToken("refresh", uid.Hex())
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.WithSuccess(ctx, http.StatusOK, "user created", gin.H{
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+	})
 	// Create Tokens
 }
 
