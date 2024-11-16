@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/AkifhanIlgaz/dictionary-api/config"
+	"github.com/AkifhanIlgaz/dictionary-api/models"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -20,7 +21,24 @@ func NewTokenService(config config.Config) TokenService {
 	}
 }
 
-func (service TokenService) GenerateToken(tokenType string, uid string) (string, error) {
+func (service TokenService) CreateTokens(uid string) (models.Tokens, error) {
+	accessToken, err := service.generateToken("access", uid)
+	if err != nil {
+		return models.Tokens{}, fmt.Errorf("create tokens: %w", err)
+	}
+
+	refreshToken, err := service.generateToken("refresh", uid)
+	if err != nil {
+		return models.Tokens{}, fmt.Errorf("create tokens: %w", err)
+	}
+
+	return models.Tokens{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
+}
+
+func (service TokenService) generateToken(tokenType string, uid string) (string, error) {
 	switch tokenType {
 	case "access":
 		return generateToken(service.config.AccessTokenPrivateKey, uid, service.config.AccessTokenExpiry)

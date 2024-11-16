@@ -55,24 +55,14 @@ func (controller AuthController) Signup(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := controller.tokenService.GenerateToken("access", uid.Hex())
+	tokens, err := controller.tokenService.CreateTokens(uid.Hex())
 	if err != nil {
 		log.Println(err.Error())
 		response.WithError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	refreshToken, err := controller.tokenService.GenerateToken("refresh", uid.Hex())
-	if err != nil {
-		log.Println(err.Error())
-		response.WithError(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	response.WithSuccess(ctx, http.StatusOK, "user created", gin.H{
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-	})
+	response.WithSuccess(ctx, http.StatusOK, "user created", tokens)
 }
 
 func (controller AuthController) Signin(ctx *gin.Context) {
@@ -97,26 +87,38 @@ func (controller AuthController) Signin(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := controller.tokenService.GenerateToken("access", uid.Hex())
+	tokens, err := controller.tokenService.CreateTokens(uid.Hex())
 	if err != nil {
 		log.Println(err.Error())
 		response.WithError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	refreshToken, err := controller.tokenService.GenerateToken("refresh", uid.Hex())
-	if err != nil {
-		log.Println(err.Error())
-		response.WithError(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	response.WithSuccess(ctx, http.StatusOK, "logged in", gin.H{
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-	})
+	response.WithSuccess(ctx, http.StatusOK, "logged in", tokens)
 }
 
 func (controller AuthController) Refresh(ctx *gin.Context) {
+	var req models.RefreshTokenRequest
 
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusBadRequest, message.MissingField)
+		return
+	}
+
+	uid, err := controller.tokenService.ParseToken("refresh", req.RefreshToken)
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	tokens, err := controller.tokenService.CreateTokens(uid)
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.WithSuccess(ctx, http.StatusOK, "tokens refreshed", tokens)
 }
