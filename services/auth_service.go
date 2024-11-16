@@ -2,11 +2,13 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/AkifhanIlgaz/dictionary-api/models"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/crypto"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
+	"github.com/AkifhanIlgaz/dictionary-api/utils/message"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -35,7 +37,7 @@ func NewAuthService(ctx context.Context, mongodb *mongo.Database) (AuthService, 
 	}, nil
 }
 
-func (service AuthService) Create(req models.SignupRequest) (primitive.ObjectID, error) {
+func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, error) {
 	passwordHash, err := crypto.HashPassword(req.Password)
 	if err != nil {
 		return primitive.NilObjectID, fmt.Errorf("create user: %w", err)
@@ -54,4 +56,25 @@ func (service AuthService) Create(req models.SignupRequest) (primitive.ObjectID,
 	}
 
 	return result.InsertedID.(primitive.ObjectID), nil
+}
+
+func (service AuthService) AuthenticateUser(req models.AuthRequest) (primitive.ObjectID, error) {
+	collection := service.db.Collection(db.UsersCollection)
+
+	filter := bson.M{
+		"email": req.Email,
+	}
+
+	var user models.User
+
+	err := collection.FindOne(service.ctx, filter).Decode(&user)
+	if err != nil {
+		return primitive.NilObjectID, fmt.Errorf("authenticate user: %w", err)
+	}
+
+	if err := crypto.VerifyPassword(user.PasswordHash, req.Password); err != nil {
+		return primitive.NilObjectID, errors.New(message.WrongPassword)
+	}
+
+	return user.Id, nil
 }
