@@ -33,8 +33,13 @@ func main() {
 	mongoDatabase := mongoClient.Database(db.DatabaseName)
 
 	wordService := services.NewWordService(ctx, mongoDatabase)
-	userService := services.NewUserService(ctx)
 	tokenService := services.NewTokenService(config)
+
+	userService, err := services.NewUserService(ctx, mongoDatabase)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	authService, err := services.NewAuthService(ctx, mongoDatabase)
 	if err != nil {
 		log.Fatal(err)

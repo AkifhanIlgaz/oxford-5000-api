@@ -5,6 +5,7 @@ const (
 )
 
 const (
-	UsersCollection string = "users"
-	WordsCollection string = "words"
+	UsersCollection   string = "users"
+	WordsCollection   string = "words"
+	ApiKeysCollection string = "api_keys"
 )

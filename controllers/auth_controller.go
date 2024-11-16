@@ -12,6 +12,7 @@ import (
 )
 
 const AuthPath string = "/auth"
+const ApiKeyPath string = "/api-key"
 
 type AuthController struct {
 	authService  services.AuthService
@@ -31,6 +32,13 @@ func (controller AuthController) SetupRoutes(rg *gin.RouterGroup) {
 	router.POST("/signup", controller.Signup)
 	router.POST("/signin", controller.Signin)
 	router.POST("/refresh", controller.Refresh)
+
+	apiKey := router.Group(ApiKeyPath)
+
+	apiKey.GET("/", controller.GetApiKey)
+	apiKey.POST("/", controller.CreateApiKey)
+	apiKey.DELETE("/", controller.DeleteApiKey)
+
 }
 
 func (controller AuthController) Signup(ctx *gin.Context) {
@@ -122,3 +130,9 @@ func (controller AuthController) Refresh(ctx *gin.Context) {
 
 	response.WithSuccess(ctx, http.StatusOK, "tokens refreshed", tokens)
 }
+
+func (controller AuthController) GetApiKey(ctx *gin.Context) {}
+
+func (controller AuthController) CreateApiKey(ctx *gin.Context) {}
+
+func (controller AuthController) DeleteApiKey(ctx *gin.Context) {}

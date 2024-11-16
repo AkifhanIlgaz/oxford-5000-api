@@ -16,8 +16,8 @@ import (
 )
 
 type AuthService struct {
-	ctx context.Context
-	db  *mongo.Database
+	ctx        context.Context
+	collection *mongo.Collection
 }
 
 func NewAuthService(ctx context.Context, mongodb *mongo.Database) (AuthService, error) {
@@ -32,8 +32,8 @@ func NewAuthService(ctx context.Context, mongodb *mongo.Database) (AuthService, 
 	}
 
 	return AuthService{
-		ctx: ctx,
-		db:  mongodb,
+		ctx:        ctx,
+		collection: collection,
 	}, nil
 }
 
@@ -48,9 +48,7 @@ func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, e
 		PasswordHash: passwordHash,
 	}
 
-	collection := service.db.Collection(db.UsersCollection)
-
-	result, err := collection.InsertOne(service.ctx, userToCreate)
+	result, err := service.collection.InsertOne(service.ctx, userToCreate)
 	if err != nil {
 		return primitive.NilObjectID, fmt.Errorf("create user: %w", err)
 	}
@@ -59,7 +57,6 @@ func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, e
 }
 
 func (service AuthService) AuthenticateUser(req models.AuthRequest) (primitive.ObjectID, error) {
-	collection := service.db.Collection(db.UsersCollection)
 
 	filter := bson.M{
 		"email": req.Email,
@@ -67,7 +64,7 @@ func (service AuthService) AuthenticateUser(req models.AuthRequest) (primitive.O
 
 	var user models.User
 
-	err := collection.FindOne(service.ctx, filter).Decode(&user)
+	err := service.collection.FindOne(service.ctx, filter).Decode(&user)
 	if err != nil {
 		return primitive.NilObjectID, fmt.Errorf("authenticate user: %w", err)
 	}
