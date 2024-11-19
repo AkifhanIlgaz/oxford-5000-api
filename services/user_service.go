@@ -85,9 +85,6 @@ func (s *UserService) GetApiKey(uid string) (*models.APIKey, error) {
 
 	err := s.collection.FindOne(s.ctx, filter).Decode(&apiKey)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, fmt.Errorf("no api key found for user: %s", uid)
-		}
 		return nil, fmt.Errorf("get api key: %w", err)
 	}
 

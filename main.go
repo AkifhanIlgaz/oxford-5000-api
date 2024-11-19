@@ -45,12 +45,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	wordController := controllers.NewWordController(wordService)
-	authController := controllers.NewAuthController(authService, tokenService)
-	userController := controllers.NewUserController(userService)
 	userMiddleware := middlewares.NewUserMiddleware(tokenService)
 
-	_ = userMiddleware
+	wordController := controllers.NewWordController(wordService)
+	authController := controllers.NewAuthController(authService, tokenService)
+	userController := controllers.NewUserController(userService, userMiddleware)
 
 	server := gin.Default()
 
