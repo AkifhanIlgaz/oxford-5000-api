@@ -6,10 +6,13 @@ import (
 
 	"github.com/AkifhanIlgaz/dictionary-api/config"
 	"github.com/AkifhanIlgaz/dictionary-api/controllers"
+	_ "github.com/AkifhanIlgaz/dictionary-api/docs"
 	"github.com/AkifhanIlgaz/dictionary-api/middlewares"
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -58,6 +61,8 @@ func main() {
 	wordController.SetupRoutes(router)
 	authController.SetupRoutes(router)
 	userController.SetupRoutes(router)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	err = server.Run(":" + config.Port)
 	if err != nil {

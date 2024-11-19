@@ -1,0 +1,123 @@
+definitions:
+  models.Definition:
+    description: A single definition of a word
+    properties:
+      examples:
+        items:
+          type: string
+        type: array
+      meaning:
+        description: |-
+          Meaning contains the actual definition
+          @Description The actual definition of the word
+        type: string
+      partOfSpeech:
+        description: |-
+          PartOfSpeech indicates the grammatical category
+          @Description Grammatical category (noun, verb, etc.)
+        type: string
+    type: object
+  models.Idiom:
+    properties:
+      definition:
+        items:
+          $ref: '#/definitions/models.Definition'
+        type: array
+      usage:
+        type: string
+    type: object
+  models.WordInfo:
+    description: Detailed information about a word
+    properties:
+      CEFRLevel:
+        type: string
+      audio:
+        properties:
+          UK:
+            type: string
+          US:
+            type: string
+        type: object
+      definitions:
+        items:
+          $ref: '#/definitions/models.Definition'
+        type: array
+      idioms:
+        items:
+          $ref: '#/definitions/models.Idiom'
+        type: array
+      index:
+        type: integer
+      partOfSpeech:
+        type: string
+      source:
+        type: string
+      word:
+        type: string
+    type: object
+  response.Response:
+    description: Standard API response format
+    properties:
+      data:
+        description: |-
+          Data contains the actual response payload
+          @Description Response payload data
+      error:
+        description: |-
+          Error contains error details if Success is false
+          @Description Error details when Success is false
+        type: string
+      message:
+        description: |-
+          Message contains a human-readable response message
+          @Description Human-readable response message
+        type: string
+      success:
+        description: |-
+          Success indicates if the request was successful
+          @Description Indicates if the request was successful
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /word/{word}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves detailed information about a word including definitions,
+        examples, and usage
+      parameters:
+      - description: Word to look up
+        in: path
+        name: word
+        required: true
+        type: string
+      - description: Filter by part of speech (noun, verb, adjective, etc.)
+        in: query
+        name: part_of_speech
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Word found successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.WordInfo'
+              type: object
+        "400":
+          description: Invalid part of speech
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get word information
+      tags:
+      - word
+swagger: "2.0"

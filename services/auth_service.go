@@ -15,11 +15,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// AuthService handles user authentication operations using MongoDB
 type AuthService struct {
 	ctx        context.Context
 	collection *mongo.Collection
 }
 
+// NewAuthService creates a new AuthService instance and initializes a unique index on the email field.
+// It returns an error if the index creation fails.
 func NewAuthService(ctx context.Context, mongodb *mongo.Database) (AuthService, error) {
 	collection := mongodb.Collection(db.UsersCollection)
 
@@ -37,6 +40,10 @@ func NewAuthService(ctx context.Context, mongodb *mongo.Database) (AuthService, 
 	}, nil
 }
 
+// Create registers a new user in the system.
+// It takes an AuthRequest containing email and password, hashes the password,
+// and stores the user in MongoDB.
+// Returns the created user's ObjectID or an error if the operation fails.
 func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, error) {
 	passwordHash, err := crypto.HashPassword(req.Password)
 	if err != nil {
@@ -56,6 +63,10 @@ func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, e
 	return result.InsertedID.(primitive.ObjectID), nil
 }
 
+// AuthenticateUser verifies user credentials against stored data.
+// It takes an AuthRequest containing email and password, finds the user by email,
+// and verifies the password hash.
+// Returns the user's ObjectID if authentication succeeds, or an error if credentials are invalid.
 func (service AuthService) AuthenticateUser(req models.AuthRequest) (primitive.ObjectID, error) {
 
 	filter := bson.M{

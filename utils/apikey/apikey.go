@@ -6,9 +6,9 @@ import (
 	"fmt"
 )
 
-// GenerateApiKey creates a new secure random API key
-// Returns a base64 encoded string in the format: "dict_<random-string>"
-func GenerateApiKey() (string, error) {
+// GenerateAPIKey creates a new secure random API key
+// Returns a base64 encoded string in the format: "oxf_<random-string>"
+func GenerateAPIKey() (string, error) {
 	// Generate 32 bytes of random data
 	randomBytes := make([]byte, 32)
 	if _, err := rand.Read(randomBytes); err != nil {

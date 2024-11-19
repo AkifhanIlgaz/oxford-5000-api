@@ -37,7 +37,7 @@ func NewUserService(ctx context.Context, mongoDatabase *mongo.Database) (UserSer
 
 // CreateApiKey generates and stores a new API key for the given user ID
 func (s *UserService) CreateApiKey(uid, name string) (*models.APIKey, error) {
-	apiKey, err := apikey.GenerateApiKey()
+	apiKey, err := apikey.GenerateAPIKey()
 	if err != nil {
 		return nil, fmt.Errorf("generate api key: %w", err)
 	}

@@ -11,16 +11,20 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+// TokenService handles JWT token generation and parsing operations
 type TokenService struct {
 	config config.Config
 }
 
+// NewTokenService creates a new TokenService instance with the provided configuration
 func NewTokenService(config config.Config) TokenService {
 	return TokenService{
 		config: config,
 	}
 }
 
+// CreateTokens generates both access and refresh tokens for a given user ID
+// Returns a models.Tokens struct containing both tokens, or an error if token generation fails
 func (service TokenService) CreateTokens(uid string) (models.Tokens, error) {
 	accessToken, err := service.generateToken("access", uid)
 	if err != nil {
@@ -38,6 +42,12 @@ func (service TokenService) CreateTokens(uid string) (models.Tokens, error) {
 	}, nil
 }
 
+// generateToken creates a specific type of JWT token (access or refresh) for a given user ID
+// Parameters:
+//   - tokenType: "access" or "refresh"
+//   - uid: user identifier
+//
+// Returns the generated token as a string or an error if generation fails
 func (service TokenService) generateToken(tokenType string, uid string) (string, error) {
 	switch tokenType {
 	case "access":
@@ -49,7 +59,12 @@ func (service TokenService) generateToken(tokenType string, uid string) (string,
 	}
 }
 
-// returns uid
+// ParseToken validates and extracts the user ID from a given token
+// Parameters:
+//   - tokenType: "access" or "refresh"
+//   - token: the JWT token string to parse
+//
+// Returns the user ID (uid) from the token claims or an error if parsing fails
 func (service TokenService) ParseToken(tokenType string, token string) (string, error) {
 	switch tokenType {
 	case "access":
@@ -61,6 +76,13 @@ func (service TokenService) ParseToken(tokenType string, token string) (string, 
 	}
 }
 
+// generateToken creates a JWT token using RSA private key encryption
+// Parameters:
+//   - privKey: base64 encoded RSA private key
+//   - uid: user identifier to be included in token claims
+//   - expiryHour: token expiration time in hours
+//
+// Returns the signed JWT token as a string or an error if generation fails
 func generateToken(privKey string, uid string, expiryHour int) (string, error) {
 	decodedPrivateKey, err := base64.StdEncoding.DecodeString(privKey)
 	if err != nil {
@@ -85,6 +107,12 @@ func generateToken(privKey string, uid string, expiryHour int) (string, error) {
 	return token, nil
 }
 
+// parseToken validates and decodes a JWT token using RSA public key
+// Parameters:
+//   - publicKey: base64 encoded RSA public key
+//   - token: JWT token string to parse
+//
+// Returns the user ID from the token claims or an error if validation fails
 func parseToken(publicKey string, token string) (string, error) {
 	decodedPublicKey, err := base64.StdEncoding.DecodeString(publicKey)
 	if err != nil {
