@@ -9,3 +9,7 @@ type APIKey struct {
 	TotalUsage int       `json:"totalUsage" bson:"totalUsage"`
 	CreatedAt  time.Time `json:"createdAt" bson:"createdAt"`
 }
+
+type APIKeyResponse struct {
+	APIKey *APIKey `json:"apiKey"`
+}

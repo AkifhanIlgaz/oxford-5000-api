@@ -36,10 +36,10 @@ func NewUserService(ctx context.Context, mongoDatabase *mongo.Database) (UserSer
 }
 
 // CreateApiKey generates and stores a new API key for the given user ID
-func (s *UserService) CreateApiKey(uid, name string) (string, error) {
+func (s *UserService) CreateApiKey(uid, name string) (*models.APIKey, error) {
 	apiKey, err := apikey.GenerateApiKey()
 	if err != nil {
-		return "", fmt.Errorf("generate api key: %w", err)
+		return nil, fmt.Errorf("generate api key: %w", err)
 	}
 
 	apiKeyDoc := models.APIKey{
@@ -52,10 +52,10 @@ func (s *UserService) CreateApiKey(uid, name string) (string, error) {
 
 	_, err = s.collection.InsertOne(s.ctx, apiKeyDoc)
 	if err != nil {
-		return "", fmt.Errorf("create api key: %w", err)
+		return nil, fmt.Errorf("create api key: %w", err)
 	}
 
-	return apiKey, nil
+	return &apiKeyDoc, nil
 }
 
 // DeleteApiKey removes the API key associated with the given user ID

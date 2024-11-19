@@ -1,25 +1,24 @@
 package middlewares
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
-	"firebase.google.com/go/v4/auth"
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/api"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/message"
+	"github.com/AkifhanIlgaz/dictionary-api/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
 type UserMiddleware struct {
-	userService services.UserService
+	tokenService services.TokenService
 }
 
-func NewUserMiddleware(userService services.UserService) UserMiddleware {
+func NewUserMiddleware(tokenService services.TokenService) UserMiddleware {
 	return UserMiddleware{
-		userService: userService,
+		tokenService: tokenService,
 	}
 }
 
@@ -40,16 +39,23 @@ func parseIdTokenFromHeader(header http.Header) (string, error) {
 	return fields[1], nil
 }
 
-func GetUserFromContext(ctx *gin.Context) (*auth.UserRecord, error) {
-	ctxUser, exists := ctx.Get(api.ContextUser)
-	if !exists {
-		return nil, errors.New(message.UserNotFound)
-	}
+func (m UserMiddleware) AuthenticateUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		// Get token from header
+		token, err := parseIdTokenFromHeader(ctx.Request.Header)
+		if err != nil {
+			response.WithError(ctx, http.StatusUnauthorized, err.Error())
+			return
+		}
 
-	user, ok := ctxUser.(*auth.UserRecord)
-	if !ok {
-		return nil, errors.New(message.UnableParseUser)
-	}
+		// Parse and validate token
+		uid, err := m.tokenService.ParseToken("access", token)
+		if err != nil {
+			response.WithError(ctx, http.StatusUnauthorized, message.InvalidToken)
+			return
+		}
 
-	return user, nil
+		ctx.Set(api.ContextUid, uid)
+		ctx.Next()
+	}
 }

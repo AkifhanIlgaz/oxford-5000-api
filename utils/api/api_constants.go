@@ -1,9 +1,10 @@
 package api
 
-
 const (
 	WordParam         string = "word"
 	PartOfSpeechParam string = "part_of_speech"
+	UidParam          string = "uid"
+	NameParam         string = "name"
 )
 
 const (
@@ -11,5 +12,5 @@ const (
 )
 
 const (
-	ContextUser string = "user"
+	ContextUid string = "uid"
 )
