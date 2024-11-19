@@ -9,6 +9,8 @@ const (
 	ApiKeyCreated   string = "api key created"
 	ApiKeyDeleted   string = "api key deleted"
 	ApiKeyError     string = "error processing api key"
+	ApiKeyRequired  string = "api key is required"
 
-	InvalidToken = "invalid or expired token"
+	InvalidApiKey string = "invalid api key"
+	InvalidToken  string = "invalid or expired token"
 )

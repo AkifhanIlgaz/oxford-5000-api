@@ -68,8 +68,9 @@ func main() {
 	}
 
 	userMiddleware := middlewares.NewUserMiddleware(tokenService)
+	wordMiddleware := middlewares.NewWordMiddleware(wordService, userService, authService)
 
-	wordController := controllers.NewWordController(wordService)
+	wordController := controllers.NewWordController(wordService, wordMiddleware)
 	authController := controllers.NewAuthController(authService, tokenService)
 	userController := controllers.NewUserController(userService, userMiddleware)
 

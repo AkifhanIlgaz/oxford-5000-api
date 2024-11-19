@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/AkifhanIlgaz/dictionary-api/middlewares"
 	"github.com/AkifhanIlgaz/dictionary-api/models"
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/api"
@@ -20,18 +21,20 @@ import (
 const WordPath = "/word"
 
 type WordController struct {
-	wordService services.WordService
+	wordService    services.WordService
+	wordMiddleware middlewares.WordMiddleware
 }
 
-func NewWordController(wordService services.WordService) WordController {
+func NewWordController(wordService services.WordService, wordMiddleware middlewares.WordMiddleware) WordController {
 	return WordController{
-		wordService: wordService,
+		wordService:    wordService,
+		wordMiddleware: wordMiddleware,
 	}
 }
 
 func (controller WordController) SetupRoutes(rg *gin.RouterGroup) {
 	router := rg.Group(WordPath)
-
+	router.Use(controller.wordMiddleware.TrackUsage())
 	// GET /:word?part_of_speech
 	router.GET("/:word", controller.GetWord)
 }

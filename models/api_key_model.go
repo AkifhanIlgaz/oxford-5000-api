@@ -13,3 +13,9 @@ type APIKey struct {
 type APIKeyResponse struct {
 	APIKey *APIKey `json:"apiKey"`
 }
+
+type DailyUsageEntry struct {
+	APIKey string    `json:"apiKey" bson:"apiKey"`
+	Date   time.Time `json:"date" bson:"date"`
+	Usage  int       `json:"usage" bson:"usage"`
+}

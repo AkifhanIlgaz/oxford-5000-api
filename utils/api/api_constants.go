@@ -5,6 +5,7 @@ const (
 	PartOfSpeechParam string = "part_of_speech"
 	UidParam          string = "uid"
 	NameParam         string = "name"
+	ApiKeyParam       string = "apikey"
 )
 
 const (
@@ -14,3 +15,13 @@ const (
 const (
 	ContextUid string = "uid"
 )
+
+const (
+	FreePlanUsage int = 100
+	ProPlanUsage  int = 1000
+)
+
+var PlanUsageLimits = map[string]int{
+	"free": FreePlanUsage,
+	"pro":  ProPlanUsage,
+}

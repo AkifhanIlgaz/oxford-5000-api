@@ -52,6 +52,7 @@ func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, e
 
 	userToCreate := models.User{
 		Email:        req.Email,
+		Plan:         "free",
 		PasswordHash: passwordHash,
 	}
 
@@ -85,4 +86,25 @@ func (service AuthService) AuthenticateUser(req models.AuthRequest) (primitive.O
 	}
 
 	return user.Id, nil
+}
+
+// GetUserPlan retrieves the subscription plan for a given user ID.
+// Returns the plan type (e.g. "free", "pro") or an error if the user is not found.
+func (service AuthService) GetUserPlan(uid string) (string, error) {
+	objectId, err := primitive.ObjectIDFromHex(uid)
+	if err != nil {
+		return "", fmt.Errorf("invalid user id: %w", err)
+	}
+
+	filter := bson.M{
+		"_id": objectId,
+	}
+
+	var user models.User
+	err = service.collection.FindOne(service.ctx, filter).Decode(&user)
+	if err != nil {
+		return "", fmt.Errorf("get user plan: %w", err)
+	}
+
+	return user.Plan, nil
 }
