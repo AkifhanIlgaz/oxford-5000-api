@@ -34,6 +34,17 @@ func (controller AuthController) SetupRoutes(rg *gin.RouterGroup) {
 
 }
 
+// Register godoc
+// @Summary      Register new user
+// @Description  Register a new user with email and password
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.AuthRequest true "Register credentials"
+// @Success      201  {object}  response.Response
+// @Failure      400  {object}  response.Response
+// @Failure      500  {object}  response.Response
+// @Router       /auth/register [post]
 func (controller AuthController) Signup(ctx *gin.Context) {
 	var req models.AuthRequest
 
@@ -66,6 +77,17 @@ func (controller AuthController) Signup(ctx *gin.Context) {
 	response.WithSuccess(ctx, http.StatusOK, "user created", tokens)
 }
 
+// Login godoc
+// @Summary      Login user
+// @Description  Login with email and password
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.AuthRequest true "Login credentials"
+// @Success      200  {object}  response.Response
+// @Failure      400  {object}  response.Response
+// @Failure      401  {object}  response.Response
+// @Router       /auth/login [post]
 func (controller AuthController) Signin(ctx *gin.Context) {
 	var req models.AuthRequest
 
@@ -98,6 +120,17 @@ func (controller AuthController) Signin(ctx *gin.Context) {
 	response.WithSuccess(ctx, http.StatusOK, "logged in", tokens)
 }
 
+// Refresh godoc
+// @Summary      Refresh tokens
+// @Description  Get new access and refresh tokens using a valid refresh token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.RefreshTokenRequest true "Refresh token"
+// @Success      200  {object}  response.Response
+// @Failure      400  {object}  response.Response
+// @Failure      401  {object}  response.Response
+// @Router       /auth/refresh [post]
 func (controller AuthController) Refresh(ctx *gin.Context) {
 	var req models.RefreshTokenRequest
 

@@ -15,6 +15,25 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title           Dictionary API
+// @version         1.0
+// @description     A Dictionary API with authentication and word management features
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Your Name
+// @contact.url    http://your-url.com
+// @contact.email  your-email@domain.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	config, err := config.Load()
 	if err != nil {

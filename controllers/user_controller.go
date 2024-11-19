@@ -41,6 +41,16 @@ func (controller UserController) SetupRoutes(rg *gin.RouterGroup) {
 	apiKey.DELETE("/", controller.DeleteApiKey)
 }
 
+// @Summary Get API Key
+// @Description Retrieves the API key for the authenticated user
+// @Tags API Keys
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} models.APIKeyResponse "API key retrieved successfully"
+// @Failure 404 {object} response.Response "No API key found"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /user/api-key [get]
 func (controller UserController) GetApiKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
 
@@ -60,6 +70,16 @@ func (controller UserController) GetApiKey(ctx *gin.Context) {
 	})
 }
 
+// @Summary Create API Key
+// @Description Creates a new API key for the authenticated user
+// @Tags API Keys
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param name query string true "Name for the API key"
+// @Success 201 {object} models.APIKeyResponse "API key created successfully"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /user/api-key [post]
 func (controller UserController) CreateApiKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
 	name := ctx.Query(api.NameParam)
@@ -76,6 +96,15 @@ func (controller UserController) CreateApiKey(ctx *gin.Context) {
 	})
 }
 
+// @Summary Delete API Key
+// @Description Deletes the API key for the authenticated user
+// @Tags API Keys
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} response.Response "API key deleted successfully"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /user/api-key [delete]
 func (controller UserController) DeleteApiKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
 
