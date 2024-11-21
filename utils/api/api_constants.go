@@ -17,7 +17,7 @@ const (
 )
 
 const (
-	FreePlanUsage int = 100
+	FreePlanUsage int = 10
 	ProPlanUsage  int = 1000
 )
 

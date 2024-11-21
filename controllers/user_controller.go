@@ -32,13 +32,13 @@ func NewUserController(userService services.UserService, userMiddleware middlewa
 
 func (controller UserController) SetupRoutes(rg *gin.RouterGroup) {
 	router := rg.Group(UserPath)
+	router.Use(controller.userMiddleware.AuthenticateUser())
 
 	apiKey := router.Group(ApiKeyPath)
-	apiKey.Use(controller.userMiddleware.AuthenticateUser())
 
-	apiKey.GET("/", controller.GetApiKey)
-	apiKey.POST("/", controller.CreateApiKey)
-	apiKey.DELETE("/", controller.DeleteApiKey)
+	apiKey.GET("", controller.GetAPIKey)
+	apiKey.POST("", controller.GenerateAPIKey)
+	apiKey.DELETE("", controller.RevokeAPIKey)
 }
 
 // @Summary Get API Key
@@ -51,7 +51,7 @@ func (controller UserController) SetupRoutes(rg *gin.RouterGroup) {
 // @Failure 404 {object} response.Response "No API key found"
 // @Failure 500 {object} response.Response "Internal server error"
 // @Router /user/api-key [get]
-func (controller UserController) GetApiKey(ctx *gin.Context) {
+func (controller UserController) GetAPIKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
 
 	apiKey, err := controller.userService.GetApiKey(uid)
@@ -80,7 +80,7 @@ func (controller UserController) GetApiKey(ctx *gin.Context) {
 // @Success 201 {object} models.APIKeyResponse "API key created successfully"
 // @Failure 500 {object} response.Response "Internal server error"
 // @Router /user/api-key [post]
-func (controller UserController) CreateApiKey(ctx *gin.Context) {
+func (controller UserController) GenerateAPIKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
 	name := ctx.Query(api.NameParam)
 
@@ -105,7 +105,7 @@ func (controller UserController) CreateApiKey(ctx *gin.Context) {
 // @Success 200 {object} response.Response "API key deleted successfully"
 // @Failure 500 {object} response.Response "Internal server error"
 // @Router /user/api-key [delete]
-func (controller UserController) DeleteApiKey(ctx *gin.Context) {
+func (controller UserController) RevokeAPIKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
 
 	if err := controller.userService.DeleteApiKey(uid); err != nil {

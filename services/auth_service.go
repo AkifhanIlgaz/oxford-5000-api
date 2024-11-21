@@ -12,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // AuthService handles user authentication operations using MongoDB
@@ -24,19 +23,9 @@ type AuthService struct {
 // NewAuthService creates a new AuthService instance and initializes a unique index on the email field.
 // It returns an error if the index creation fails.
 func NewAuthService(ctx context.Context, mongodb *mongo.Database) (AuthService, error) {
-	collection := mongodb.Collection(db.UsersCollection)
-
-	_, err := collection.Indexes().CreateOne(ctx, mongo.IndexModel{
-		Keys:    bson.D{{Key: "email", Value: 1}},
-		Options: options.Index().SetUnique(true),
-	})
-	if err != nil {
-		return AuthService{}, fmt.Errorf("initialize auth service: %w", err)
-	}
-
 	return AuthService{
 		ctx:        ctx,
-		collection: collection,
+		collection: mongodb.Collection(db.UsersCollection),
 	}, nil
 }
 
@@ -107,4 +96,58 @@ func (service AuthService) GetUserPlan(uid string) (string, error) {
 	}
 
 	return user.Plan, nil
+}
+
+// UpgradePlan upgrades a user's subscription plan to "pro".
+// It takes a user ID string, converts it to an ObjectID, and updates the user's plan in the database.
+// Returns an error if the user ID is invalid or if the database update fails.
+func (service AuthService) UpgradePlan(uid string) error {
+	objectId, err := primitive.ObjectIDFromHex(uid)
+	if err != nil {
+		return fmt.Errorf("invalid user id: %w", err)
+	}
+
+	filter := bson.M{
+		"_id": objectId,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"plan": "pro",
+		},
+	}
+
+	_, err = service.collection.UpdateOne(service.ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("upgrade plan: %w", err)
+	}
+
+	return nil
+}
+
+// DowngradePlan downgrades a user's subscription plan to "free".
+// It takes a user ID string, converts it to an ObjectID, and updates the user's plan in the database.
+// Returns an error if the user ID is invalid or if the database update fails.
+func (service AuthService) DowngradePlan(uid string) error {
+	objectId, err := primitive.ObjectIDFromHex(uid)
+	if err != nil {
+		return fmt.Errorf("invalid user id: %w", err)
+	}
+
+	filter := bson.M{
+		"_id": objectId,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"plan": "free",
+		},
+	}
+
+	_, err = service.collection.UpdateOne(service.ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("downgrade plan: %w", err)
+	}
+
+	return nil
 }

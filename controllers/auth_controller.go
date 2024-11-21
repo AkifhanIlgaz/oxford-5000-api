@@ -28,9 +28,9 @@ func NewAuthController(authService services.AuthService, tokenService services.T
 func (controller AuthController) SetupRoutes(rg *gin.RouterGroup) {
 	router := rg.Group(AuthPath)
 
-	router.POST("/signup", controller.Signup)
-	router.POST("/signin", controller.Signin)
-	router.POST("/refresh", controller.Refresh)
+	router.POST("/register", controller.Register)
+	router.POST("/login", controller.Login)
+	router.POST("/refresh-token", controller.RefreshToken)
 
 }
 
@@ -45,7 +45,7 @@ func (controller AuthController) SetupRoutes(rg *gin.RouterGroup) {
 // @Failure      400  {object}  response.Response
 // @Failure      500  {object}  response.Response
 // @Router       /auth/register [post]
-func (controller AuthController) Signup(ctx *gin.Context) {
+func (controller AuthController) Register(ctx *gin.Context) {
 	var req models.AuthRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -88,7 +88,7 @@ func (controller AuthController) Signup(ctx *gin.Context) {
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
 // @Router       /auth/login [post]
-func (controller AuthController) Signin(ctx *gin.Context) {
+func (controller AuthController) Login(ctx *gin.Context) {
 	var req models.AuthRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -131,7 +131,7 @@ func (controller AuthController) Signin(ctx *gin.Context) {
 // @Failure      400  {object}  response.Response
 // @Failure      401  {object}  response.Response
 // @Router       /auth/refresh [post]
-func (controller AuthController) Refresh(ctx *gin.Context) {
+func (controller AuthController) RefreshToken(ctx *gin.Context) {
 	var req models.RefreshTokenRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {

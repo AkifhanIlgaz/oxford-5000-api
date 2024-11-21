@@ -14,18 +14,27 @@ import (
 )
 
 type UserService struct {
-	ctx             context.Context
-	collection      *mongo.Collection
-	usageCollection *mongo.Collection
-	
+	ctx              context.Context
+	userCollection   *mongo.Collection
+	apiKeyCollection *mongo.Collection
+	usageCollection  *mongo.Collection
 }
 
 func NewUserService(ctx context.Context, mongoDatabase *mongo.Database) (UserService, error) {
-	collection := mongoDatabase.Collection(db.ApiKeysCollection)
+	userCollection := mongoDatabase.Collection(db.UsersCollection)
+	apiKeyCollection := mongoDatabase.Collection(db.ApiKeysCollection)
 	usageCollection := mongoDatabase.Collection(db.DailyUsageCollection)
 
+	_, err := userCollection.Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys:    bson.D{{Key: "email", Value: 1}},
+		Options: options.Index().SetUnique(true),
+	})
+	if err != nil {
+		return UserService{}, fmt.Errorf("initialize user service: %w", err)
+	}
+
 	// Create index for api keys collection
-	_, err := collection.Indexes().CreateOne(ctx, mongo.IndexModel{
+	_, err = apiKeyCollection.Indexes().CreateOne(ctx, mongo.IndexModel{
 		Keys:    bson.D{{Key: "uid", Value: 1}},
 		Options: options.Index().SetUnique(true),
 	})
@@ -46,9 +55,10 @@ func NewUserService(ctx context.Context, mongoDatabase *mongo.Database) (UserSer
 	}
 
 	return UserService{
-		ctx:             ctx,
-		collection:      collection,
-		usageCollection: usageCollection,
+		ctx:              ctx,
+		userCollection:   userCollection,
+		apiKeyCollection: apiKeyCollection,
+		usageCollection:  usageCollection,
 	}, nil
 }
 
@@ -67,7 +77,7 @@ func (s *UserService) CreateApiKey(uid, name string) (*models.APIKey, error) {
 		CreatedAt:  time.Now(),
 	}
 
-	_, err = s.collection.InsertOne(s.ctx, apiKeyDoc)
+	_, err = s.apiKeyCollection.InsertOne(s.ctx, apiKeyDoc)
 	if err != nil {
 		return nil, fmt.Errorf("create api key: %w", err)
 	}
@@ -80,7 +90,7 @@ func (s *UserService) DeleteApiKey(uid string) error {
 	filter := bson.M{
 		"uid": uid,
 	}
-	result, err := s.collection.DeleteOne(s.ctx, filter)
+	result, err := s.apiKeyCollection.DeleteOne(s.ctx, filter)
 	if err != nil {
 		return fmt.Errorf("delete api key: %w", err)
 	}
@@ -100,7 +110,7 @@ func (s *UserService) GetApiKey(uid string) (*models.APIKey, error) {
 		"uid": uid,
 	}
 
-	err := s.collection.FindOne(s.ctx, filter).Decode(&apiKey)
+	err := s.apiKeyCollection.FindOne(s.ctx, filter).Decode(&apiKey)
 	if err != nil {
 		return nil, fmt.Errorf("get api key: %w", err)
 	}
@@ -114,7 +124,7 @@ func (s *UserService) GetByKey(key string) (*models.APIKey, error) {
 	}
 
 	var apiKey models.APIKey
-	err := s.collection.FindOne(s.ctx, filter).Decode(&apiKey)
+	err := s.apiKeyCollection.FindOne(s.ctx, filter).Decode(&apiKey)
 	if err != nil {
 		return nil, fmt.Errorf("get by api key: %w", err)
 	}
@@ -172,7 +182,7 @@ func (s *UserService) incrementTotalUsage(key string) error {
 		"$inc": bson.M{"totalUsage": 1},
 	}
 
-	_, err := s.collection.UpdateOne(s.ctx, filter, update)
+	_, err := s.apiKeyCollection.UpdateOne(s.ctx, filter, update)
 	if err != nil {
 		return fmt.Errorf("increment total usage: %w", err)
 	}

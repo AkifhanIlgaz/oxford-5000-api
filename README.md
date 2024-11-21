@@ -5,6 +5,8 @@ A RESTful API service providing access to Oxford 5000 word definitions, includin
 ## Features
 
 - Word lookup with detailed information
+  - Web scraping from Oxford Dictionary
+  - Comprehensive parsing of word definitions, examples, and properties
 - User authentication system
 - API key management
 - Swagger documentation
@@ -141,4 +143,53 @@ Swagger documentation is available at `/api/swagger/*` when running the server.
 - MongoDB
 - JWT Authentication
 - Swagger/OpenAPI
+
+## Technical Architecture
+
+### Parser Component
+
+The API includes a robust parsing system (`utils/parser`) that handles:
+
+- Web scraping from Oxford Dictionary pages
+- DOM traversal and data extraction
+- Structured information parsing including:
+  - Word definitions and examples
+  - Part of speech
+  - CEFR levels
+  - Audio pronunciation URLs
+  - Related idioms and their usage
+
+### Data Models
+
+Word information is structured as follows:
+
+```json
+{
+    "word": "example",
+    "header": {
+        "partOfSpeech": "noun",
+        "cefrLevel": "B1",
+        "audio": {
+            "uk": "uk_pronunciation_url",
+            "us": "us_pronunciation_url"
+        }
+    },
+    "definitions": [
+        {
+            "meaning": "definition text",
+            "examples": ["example usage"]
+        }
+    ],
+    "idioms": [
+        {
+            "usage": "idiom phrase",
+            "definitions": [
+                {
+                    "meaning": "idiom definition",
+                    "examples": ["idiom example"]
+                }
+            ]
+        }
+    ]
+}
 ```

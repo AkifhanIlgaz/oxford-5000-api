@@ -35,8 +35,8 @@ func NewWordController(wordService services.WordService, wordMiddleware middlewa
 func (controller WordController) SetupRoutes(rg *gin.RouterGroup) {
 	router := rg.Group(WordPath)
 	router.Use(controller.wordMiddleware.TrackUsage())
-	// GET /:word?part_of_speech
-	router.GET("/:word", controller.GetWord)
+
+	router.GET("/search/:word", controller.GetWord)
 }
 
 // GetWord godoc
