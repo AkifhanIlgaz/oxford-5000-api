@@ -31,11 +31,11 @@ export default function Home() {
 }`;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <Badge className="mb-4">v1.0 Now Available</Badge>
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
+        <h1 className="text-white scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
           The Oxford 5000™ API
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">

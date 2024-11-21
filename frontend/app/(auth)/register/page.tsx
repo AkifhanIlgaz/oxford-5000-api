@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -36,31 +36,25 @@ export default function LoginPage() {
         router.push('/dashboard');
       } else {
         const data = await response.json();
-        setError(data.message || 'Login failed');
+        setError(data.message || 'Registration failed');
       }
     } catch (error) {
-      setError('An error occurred during login', error);
+      console.log(error);
+      setError('An error occurred during registration');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-      <div className="max-w-[400px] text-center mb-12">
-        <h2 className="text-2xl font-bold text-slate-200 mb-3">
-          Welcome to Oxford 5000™ API
+    <>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-display font-bold text-slate-200 mb-3">
+          Welcome!
         </h2>
       </div>
-      {/* <div className="mb-8 text-center">
-        <Link href="/">
-          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight text-slate-200">
-            Sign Up
-          </h1>
-        </Link>
-      </div> */}
 
-      <Card className="w-full max-w-[400px] bg-transparent border-none">
+      <Card className="bg-transparent border-none">
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
@@ -114,10 +108,16 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white "
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               disabled={isLoading}
             >
-              {isLoading ? 'Signing up...' : 'Sign Up'}
+              {isLoading ? (
+                'Signing up...'
+              ) : (
+                <>
+                  <UserPlus className="mr-2 h-4 w-4" /> Sign Up
+                </>
+              )}
             </Button>
           </form>
         </CardContent>
@@ -131,6 +131,6 @@ export default function LoginPage() {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </>
   );
 }

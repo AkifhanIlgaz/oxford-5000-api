@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -39,37 +39,33 @@ export default function LoginPage() {
         setError(data.message || 'Login failed');
       }
     } catch (error) {
-      setError('An error occurred during login', error);
+      console.log(error);
+      setError('An error occurred during login');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-      <div className="max-w-[500px] text-center mb-12">
-        <h2 className="text-2xl font-bold text-slate-200 mb-3">
-          Welcome Back to Oxford 5000™ API
+    <>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-display font-bold text-slate-200 mb-3">
+          Welcome Back!
         </h2>
       </div>
-      {/* <div className="mb-8 text-center">
-        <Link href="/">
-          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight text-slate-200">
-            Sign Up
-          </h1>
-        </Link>
-      </div> */}
 
-      <Card className="w-full max-w-[400px] bg-transparent border-none">
+      <Card className="w-full bg-transparent border-none">
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription className="font-medium">
+                  {error}
+                </AlertDescription>
               </Alert>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-200">
+              <Label htmlFor="email" className="text-slate-200 font-medium">
                 Email
               </Label>
               <Input
@@ -79,7 +75,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-white border-slate-200"
+                className="bg-white border-slate-200 font-light"
               />
             </div>
             <div className="space-y-2 pb-2">
@@ -117,28 +113,26 @@ export default function LoginPage() {
               className="w-full bg-blue-600 hover:bg-blue-700 text-white "
               disabled={isLoading}
             >
-              {isLoading ? 'Logging in...' : 'Log In'}
+              {isLoading ? (
+                'Logging in...'
+              ) : (
+                <>
+                  <LogIn className="mr-2 h-4 w-4" /> Log In
+                </>
+              )}
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="flex flex-col">
+        <CardFooter className="flex flex-col gap-4">
           <Button
             variant="outline"
-            className="w-full border-slate-200 text-slate-900 hover:bg-slate-100"
+            className="w-full border-slate-200 text-slate-900 hover:bg-slate-100 font-medium"
             asChild
           >
             <Link href="/register">Don&apos;t have an account?</Link>
           </Button>
         </CardFooter>
       </Card>
-
-      <Button
-        variant="link"
-        className=" text-slate-300 hover:text-slate-100"
-        asChild
-      >
-        <Link href="/forgot-password">Forgot your password?</Link>
-      </Button>
-    </div>
+    </>
   );
 }

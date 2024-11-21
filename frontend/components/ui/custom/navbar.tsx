@@ -6,6 +6,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import { appInfo } from '@/constants/common';
 import Link from 'next/link';
 
 export function Navbar() {
@@ -13,7 +14,7 @@ export function Navbar() {
     <nav className="border-b">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="font-bold text-xl">
-          Oxford 5000™ API
+          {appInfo.title}
         </Link>
 
         <NavigationMenu>
