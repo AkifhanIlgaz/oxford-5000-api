@@ -1,0 +1,499 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Dictionary API with authentication and word management features",
+        "title": "Dictionary API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Your Name",
+            "url": "http://your-url.com",
+            "email": "your-email@domain.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Login with email and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "description": "Get new access and refresh tokens using a valid refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh tokens",
+                "parameters": [
+                    {
+                        "description": "Refresh token",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Register a new user with email and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register new user",
+                "parameters": [
+                    {
+                        "description": "Register credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/api-key": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the API key for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "API Keys"
+                ],
+                "summary": "Get API Key",
+                "responses": {
+                    "200": {
+                        "description": "API key retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIKeyResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No API key found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new API key for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "API Keys"
+                ],
+                "summary": "Create API Key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name for the API key",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "API key created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIKeyResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes the API key for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "API Keys"
+                ],
+                "summary": "Delete API Key",
+                "responses": {
+                    "200": {
+                        "description": "API key deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/{word}": {
+            "get": {
+                "description": "Retrieves detailed information about a word including definitions, examples, and usage",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "word"
+                ],
+                "summary": "Get word information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Word to look up",
+                        "name": "word",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by part of speech (noun, verb, adjective, etc.)",
+                        "name": "part_of_speech",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Word found successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.WordInfo"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid part of speech",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.APIKey": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "totalUsage": {
+                    "type": "integer"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.APIKeyResponse": {
+            "type": "object",
+            "properties": {
+                "apiKey": {
+                    "$ref": "#/definitions/models.APIKey"
+                }
+            }
+        },
+        "models.AuthRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
+        },
+        "models.Definition": {
+            "description": "A single definition of a word",
+            "type": "object",
+            "properties": {
+                "examples": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "meaning": {
+                    "description": "Meaning contains the actual definition\n@Description The actual definition of the word",
+                    "type": "string"
+                },
+                "partOfSpeech": {
+                    "description": "PartOfSpeech indicates the grammatical category\n@Description Grammatical category (noun, verb, etc.)",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Idiom": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Definition"
+                    }
+                },
+                "usage": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RefreshTokenRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.WordInfo": {
+            "description": "Detailed information about a word",
+            "type": "object",
+            "properties": {
+                "CEFRLevel": {
+                    "type": "string"
+                },
+                "audio": {
+                    "type": "object",
+                    "properties": {
+                        "UK": {
+                            "type": "string"
+                        },
+                        "US": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "definitions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Definition"
+                    }
+                },
+                "idioms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Idiom"
+                    }
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "partOfSpeech": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "word": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Response": {
+            "description": "Standard API response format",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data contains the actual response payload\n@Description Response payload data"
+                },
+                "error": {
+                    "description": "Error contains error details if Success is false\n@Description Error details when Success is false",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "Message contains a human-readable response message\n@Description Human-readable response message",
+                    "type": "string"
+                },
+                "success": {
+                    "description": "Success indicates if the request was successful\n@Description Indicates if the request was successful",
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
