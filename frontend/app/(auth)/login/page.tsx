@@ -5,26 +5,43 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { apiEndpoints } from '@/constants/api';
+import { authMessages } from '@/constants/auth';
+import { routes } from '@/constants/navigation';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { authMessages } from '@/constants/auth';
-import { routes } from '@/constants/navigation';
-import { apiEndpoints } from '@/constants/api';
+import { useForm } from 'react-hook-form';
+
+type LoginFormData = {
+  email: string;
+  password: string;
+};
+
+type LoginResponseData = {
+  status: string;
+  message: string;
+  result: Tokens | null;
+};
+
+type Tokens = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>();
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: LoginFormData) => {
     setError('');
-    setIsLoading(true);
 
     try {
       const response = await fetch(apiEndpoints.login, {
@@ -32,20 +49,21 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
+      const responseData: LoginResponseData = await response.json();
+
+      if (response.ok && responseData.result) {
+        localStorage.setItem('accessToken', responseData.result.accessToken);
+        localStorage.setItem('refreshToken', responseData.result.refreshToken);
         router.push(routes.dashboard);
       } else {
-        const data = await response.json();
-        setError(data.message || authMessages.loginFailed);
+        setError(responseData.message || authMessages.loginFailed);
       }
     } catch (error) {
       console.log(error);
       setError(authMessages.loginError);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -59,7 +77,7 @@ export default function LoginPage() {
 
       <Card className="w-full bg-transparent border-none">
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {error && (
               <Alert variant="destructive">
                 <AlertDescription className="font-medium">
@@ -75,11 +93,18 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 placeholder={authMessages.emailPlaceholder}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                {...register('email', {
+                  required: 'Email is required',
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: 'Please enter a valid email',
+                  },
+                })}
                 className="bg-white border-slate-200 font-light"
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
             <div className="space-y-2 pb-2">
               <Label htmlFor="password" className="text-slate-200">
@@ -89,10 +114,14 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
                   placeholder={authMessages.passwordPlaceholder}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters',
+                    },
+                  })}
                   className="bg-white border-slate-200 pr-10"
                 />
                 <Button
@@ -109,14 +138,19 @@ export default function LoginPage() {
                   )}
                 </Button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white "
-              disabled={isLoading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={isSubmitting}
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 authMessages.loggingIn
               ) : (
                 <>

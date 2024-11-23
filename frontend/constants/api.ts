@@ -1,6 +1,8 @@
+const apiBaseUrl = 'http://localhost:8080';
+
 export const apiEndpoints = {
-  login: '/api/auth/login',
-  register: '/api/auth/register',
+  login: `${apiBaseUrl}/api/auth/login`,
+  register: `${apiBaseUrl}/api/auth/register`,
 };
 
 export const apiExamples = {

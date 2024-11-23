@@ -12,40 +12,62 @@ import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+type RegisterFormData = {
+  email: string;
+  password: string;
+};
+
+type RegisterResponseData = {
+  status: string;
+  message: string;
+  result: Tokens | null;
+};
+
+type Tokens = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: RegisterFormData) => {
     setError('');
-    setIsLoading(true);
-
     try {
       const response = await fetch(apiEndpoints.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
+      const responseData: RegisterResponseData = await response.json();
+
+      if (response.ok && responseData.result) {
+        localStorage.setItem('accessToken', responseData.result.accessToken);
+        localStorage.setItem('refreshToken', responseData.result.refreshToken);
         router.push(routes.dashboard);
       } else {
-        const data = await response.json();
-        setError(data.message || authMessages.registrationFailed);
+        setError(responseData.message || authMessages.registrationFailed);
       }
     } catch (error) {
       console.log(error);
       setError(authMessages.registrationError);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -59,7 +81,7 @@ export default function RegisterPage() {
 
       <Card className="bg-transparent border-none">
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
@@ -73,9 +95,7 @@ export default function RegisterPage() {
                 id="email"
                 type="email"
                 placeholder={authMessages.emailPlaceholder}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                {...register('email', { required: true })}
                 className="bg-white border-slate-200"
               />
             </div>
@@ -87,10 +107,8 @@ export default function RegisterPage() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
                   placeholder={authMessages.passwordPlaceholder}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  {...register('password', { required: true })}
                   className="bg-white border-slate-200 pr-10"
                 />
                 <Button
@@ -112,9 +130,9 @@ export default function RegisterPage() {
             <Button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 authMessages.signingUp
               ) : (
                 <>

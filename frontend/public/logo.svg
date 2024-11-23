@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Dark background circle -->
+  <circle cx="100" cy="100" r="90" fill="#1A1A1A"/>
+  
+  <!-- Glowing outer ring -->
+  <circle cx="100" cy="100" r="85" stroke="#2D3436" stroke-width="2" fill="none"/>
+  
+  <!-- Left Brace -->
+  <path d="M60 70 
+           C60 70, 70 70, 70 85
+           L70 90
+           C70 95, 65 95, 60 100
+           C65 105, 70 105, 70 110
+           L70 115
+           C70 130, 60 130, 60 130"
+        stroke="#00FF95" 
+        fill="none" 
+        stroke-width="4"
+        stroke-linecap="round"/>
+  
+  <!-- Right Brace -->
+  <path d="M140 70 
+           C140 70, 130 70, 130 85
+           L130 90
+           C130 95, 135 95, 140 100
+           C135 105, 130 105, 130 110
+           L130 115
+           C130 130, 140 130, 140 130"
+        stroke="#00FF95" 
+        fill="none" 
+        stroke-width="4"
+        stroke-linecap="round"/>
+  
+  <!-- Book base -->
+  <path d="M85 75 
+           L115 75 
+           C120 75, 120 75, 120 80
+           L120 120
+           C120 125, 120 125, 115 125
+           L85 125
+           C80 125, 80 125, 80 120
+           L80 80
+           C80 75, 80 75, 85 75"
+        fill="#2D3436"/>
+  
+  <!-- Book shine -->
+  <path d="M85 75 
+           L115 75 
+           C120 75, 120 75, 120 80
+           L120 85
+           L80 85
+           L80 80
+           C80 75, 80 75, 85 75"
+        fill="#353B48"/>
+  
+  <!-- Book pages -->
+  <path d="M82 80
+           L118 80
+           L118 120
+           L82 120"
+        fill="#353B48"/>
+  
+  <!-- Page lines -->
+  <line x1="88" y1="90" x2="112" y2="90" stroke="#4ECDC4" stroke-width="2"/>
+  <line x1="88" y1="100" x2="112" y2="100" stroke="#4ECDC4" stroke-width="2"/>
+  <line x1="88" y1="110" x2="112" y2="110" stroke="#4ECDC4" stroke-width="2"/>
+</svg>
