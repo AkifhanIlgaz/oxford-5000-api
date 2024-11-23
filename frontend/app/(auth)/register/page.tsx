@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { apiEndpoints } from '@/constants/api';
+import { authMessages } from '@/constants/auth';
+import { routes } from '@/constants/navigation';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,7 +27,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(apiEndpoints.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,14 +36,14 @@ export default function RegisterPage() {
       });
 
       if (response.ok) {
-        router.push('/dashboard');
+        router.push(routes.dashboard);
       } else {
         const data = await response.json();
-        setError(data.message || 'Registration failed');
+        setError(data.message || authMessages.registrationFailed);
       }
     } catch (error) {
       console.log(error);
-      setError('An error occurred during registration');
+      setError(authMessages.registrationError);
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +53,7 @@ export default function RegisterPage() {
     <>
       <div className="text-center mb-12">
         <h2 className="text-3xl font-display font-bold text-slate-200 mb-3">
-          Welcome!
+          {authMessages.welcomeNew}
         </h2>
       </div>
 
@@ -64,12 +67,12 @@ export default function RegisterPage() {
             )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-slate-200">
-                Email
+                {authMessages.emailLabel}
               </Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="name@example.com"
+                placeholder={authMessages.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -78,14 +81,14 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2 pb-2">
               <Label htmlFor="password" className="text-slate-200">
-                Password
+                {authMessages.passwordLabel}
               </Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  placeholder="********"
+                  placeholder={authMessages.passwordPlaceholder}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="bg-white border-slate-200 pr-10"
@@ -112,10 +115,10 @@ export default function RegisterPage() {
               disabled={isLoading}
             >
               {isLoading ? (
-                'Signing up...'
+                authMessages.signingUp
               ) : (
                 <>
-                  <UserPlus className="mr-2 h-4 w-4" /> Sign Up
+                  <UserPlus className="mr-2 h-4 w-4" /> {authMessages.signUp}
                 </>
               )}
             </Button>
@@ -127,7 +130,7 @@ export default function RegisterPage() {
             className="w-full border-slate-200 text-slate-900 hover:bg-slate-100"
             asChild
           >
-            <Link href="/login">Already have an account?</Link>
+            <Link href={routes.login}>{authMessages.haveAccount}</Link>
           </Button>
         </CardFooter>
       </Card>

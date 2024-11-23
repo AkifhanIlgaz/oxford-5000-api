@@ -1,3 +1,4 @@
+import { appInfo, features } from '@/constants/common';
 import { ReactNode } from 'react';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
@@ -13,22 +14,19 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Right Column - Project Info */}
         <div className="flex-1 max-w-md text-slate-200 space-y-8">
           <h1 className="text-5xl font-bold font-display tracking-tight">
-            Oxford 5000™ API
+            {appInfo.title}
           </h1>
           <div className="space-y-6">
             <p className="text-2xl text-slate-300 font-display">
-              Your Gateway to Advanced English Vocabulary
+              {appInfo.subtitle}
             </p>
             <p className="text-slate-400 text-lg font-light leading-relaxed">
-              Access comprehensive data for the Oxford 5000™ word list,
-              including definitions, examples, and CEFR levels. Perfect for
-              educators, developers, and language learners.
+              {appInfo.description}
             </p>
             <ul className="list-disc list-inside text-slate-400 space-y-3 text-lg font-light">
-              <li>Complete Oxford 5000™ word database</li>
-              <li>CEFR level classifications</li>
-              <li>Usage examples and definitions</li>
-              <li>Regular updates and support</li>
+              <li>{features.comprehensiveData.description}</li>
+              <li>{features.simpleIntegration.description}</li>
+              <li>{features.usageManagement.description}</li>
             </ul>
           </div>
         </div>

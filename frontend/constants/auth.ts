@@ -16,4 +16,5 @@ export const authMessages = {
   haveAccount: 'Already have an account?',
   noAccount: "Don't have an account?",
   forgotPassword: 'Forgot your password?',
+  getStarted: 'Get Started',
 };

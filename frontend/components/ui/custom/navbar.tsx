@@ -6,7 +6,9 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import { authMessages } from '@/constants/auth';
 import { appInfo } from '@/constants/common';
+import { routes } from '@/constants/navigation';
 import Link from 'next/link';
 
 export function Navbar() {
@@ -20,7 +22,7 @@ export function Navbar() {
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/api/swagger" legacyBehavior passHref>
+              <Link href={routes.documentation} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Documentation
                 </NavigationMenuLink>
@@ -28,7 +30,7 @@ export function Navbar() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Button asChild variant="default">
-                <Link href="/api/auth/register">Get Started</Link>
+                <Link href={routes.register}>{authMessages.getStarted}</Link>
               </Button>
             </NavigationMenuItem>
           </NavigationMenuList>

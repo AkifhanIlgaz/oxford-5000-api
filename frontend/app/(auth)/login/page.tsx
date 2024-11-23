@@ -9,6 +9,9 @@ import { Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { authMessages } from '@/constants/auth';
+import { routes } from '@/constants/navigation';
+import { apiEndpoints } from '@/constants/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -24,7 +27,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(apiEndpoints.login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,14 +36,14 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        router.push('/dashboard');
+        router.push(routes.dashboard);
       } else {
         const data = await response.json();
-        setError(data.message || 'Login failed');
+        setError(data.message || authMessages.loginFailed);
       }
     } catch (error) {
       console.log(error);
-      setError('An error occurred during login');
+      setError(authMessages.loginError);
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +53,7 @@ export default function LoginPage() {
     <>
       <div className="text-center mb-12">
         <h2 className="text-3xl font-display font-bold text-slate-200 mb-3">
-          Welcome Back!
+          {authMessages.welcomeBack}
         </h2>
       </div>
 
@@ -66,12 +69,12 @@ export default function LoginPage() {
             )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-slate-200 font-medium">
-                Email
+                {authMessages.emailLabel}
               </Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="name@example.com"
+                placeholder={authMessages.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -80,14 +83,14 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2 pb-2">
               <Label htmlFor="password" className="text-slate-200">
-                Password
+                {authMessages.passwordLabel}
               </Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  placeholder="********"
+                  placeholder={authMessages.passwordPlaceholder}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="bg-white border-slate-200 pr-10"
@@ -114,10 +117,10 @@ export default function LoginPage() {
               disabled={isLoading}
             >
               {isLoading ? (
-                'Logging in...'
+                authMessages.loggingIn
               ) : (
                 <>
-                  <LogIn className="mr-2 h-4 w-4" /> Log In
+                  <LogIn className="mr-2 h-4 w-4" /> {authMessages.logIn}
                 </>
               )}
             </Button>
@@ -129,7 +132,7 @@ export default function LoginPage() {
             className="w-full border-slate-200 text-slate-900 hover:bg-slate-100 font-medium"
             asChild
           >
-            <Link href="/register">Don&apos;t have an account?</Link>
+            <Link href="/register">{authMessages.noAccount}</Link>
           </Button>
         </CardFooter>
       </Card>

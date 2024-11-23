@@ -1,6 +1,6 @@
 export const apiEndpoints = {
   login: '/api/auth/login',
-  register: '/api/auth/register'
+  register: '/api/auth/register',
 };
 
 export const apiExamples = {
@@ -26,5 +26,14 @@ export const apiExamples = {
       }
     ]
   }
-}`
-}; 
+}`,
+};
+
+export const routes = {
+  home: '/',
+  login: '/login',
+  register: '/register',
+  dashboard: '/dashboard',
+  documentation: '/api/swagger',
+  forgotPassword: '/forgot-password',
+};
