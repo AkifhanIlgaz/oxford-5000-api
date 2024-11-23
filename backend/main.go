@@ -10,6 +10,7 @@ import (
 	"github.com/AkifhanIlgaz/dictionary-api/middlewares"
 	"github.com/AkifhanIlgaz/dictionary-api/services"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -76,6 +77,13 @@ func main() {
 
 	server := gin.Default()
 
+	server.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowCredentials: true,
+	}))
+
 	router := server.Group("/api")
 
 	wordController.SetupRoutes(router)
@@ -89,3 +97,5 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
+
