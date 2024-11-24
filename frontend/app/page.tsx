@@ -96,7 +96,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="text-3xl font-bold">$0</div>
                 <ul className="space-y-2">
-                  <li>✓ 100 requests per day</li>
+                  <li>✓ 1,000 requests per day</li>
                   <li>✓ Basic API access</li>
                   <li>✓ Community support</li>
                 </ul>
