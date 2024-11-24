@@ -54,3 +54,7 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 ### Backend Setup
 
 See [Backend Setup Instructions](https://github.com/AkifhanIlgaz/oxford-5000-api/blob/main/backend/README.md) for detailed setup steps.
+
+### Frontend Setup
+
+See [Frontend Setup Instructions](https://github.com/AkifhanIlgaz/oxford-5000-api/blob/main/frontend/README.md) for detailed setup steps.
