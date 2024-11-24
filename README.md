@@ -5,13 +5,14 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 ## Project Structure
 
 .
-├── backend/         # Go API server
-├── frontend/        # Next.js web application
+├── backend/ # Go API server
+├── frontend/ # Next.js web application
 └── README.md
 
 ## Features
 
 ### API Service
+
 - Word lookup with detailed information
   - Comprehensive definitions and examples
   - CEFR level indicators
@@ -23,6 +24,7 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 - Swagger documentation
 
 ### Web Interface
+
 - Modern, responsive design
 - Interactive API documentation
 - User dashboard
@@ -32,6 +34,7 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 ## Technology Stack
 
 ### Backend
+
 - Go 1.22+
 - Gin Web Framework
 - MongoDB
@@ -39,6 +42,7 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 - Swagger/OpenAPI
 
 ### Frontend
+
 - Next.js 14
 - TypeScript
 - Tailwind CSS
@@ -49,9 +53,4 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 
 ### Backend Setup
 
-1. Clone the repository
-2. Create environment files:
-   - `dev.env` for development
-   - `prod.env` for production
-
-3. Run the backend server:
+See [Backend Setup Instructions](https://github.com/AkifhanIlgaz/oxford-5000-api/blob/main/backend/README.md) for detailed setup steps.
