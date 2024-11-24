@@ -15,9 +15,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { appInfo } from '@/constants/common';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 
 const items = [
   {
@@ -38,6 +39,9 @@ const AppSidebar = () => {
 
   const handleSignOut = async () => {
     try {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      redirect('/');
       // Handle successful sign out (e.g., redirect to login)
     } catch (error) {
       console.error('Sign out failed:', error);
@@ -45,18 +49,19 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar className="border-r border-border bg-background ">
-      <SidebarContent className="pb-12">
-        {/* App Name */}
+    <Sidebar className="">
+      <SidebarContent className="pb-12 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
         <div className="px-6 py-4">
-          <h2 className="text-2xl font-bold text-foreground">Your App</h2>
+          <h2 className="text-2xl font-bold text-foreground text-white">
+            {appInfo.title}
+          </h2>
         </div>
 
         {/* Documentation Button */}
 
         {/* Navigation Groups */}
         {items.map((group) => (
-          <SidebarGroup key={group.title} className="px-3 py-2">
+          <SidebarGroup key={group.title} className="px-3 py-2  text-slate-300">
             <SidebarGroupLabel className="mb-2 px-4 text-sm font-semibold text-muted-foreground">
               {group.title}
             </SidebarGroupLabel>
@@ -72,9 +77,11 @@ const AppSidebar = () => {
                           'bg-primary text-primary-foreground hover:bg-primary/90'
                       )}
                     >
-                      <Link href={item.url}>
+                      <Link href={item.url} className="text-slate-200">
                         <item.icon />
-                        <span>{item.title}</span>
+                        <span className="flex-grow font-inter text-[14px]  font-semibold leading-6 whitespace-nowrap">
+                          {item.title}
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
