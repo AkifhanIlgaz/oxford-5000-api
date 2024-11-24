@@ -4,6 +4,9 @@ export const apiEndpoints = {
   login: `${apiBaseUrl}/api/auth/login`,
   register: `${apiBaseUrl}/api/auth/register`,
   apiKey: `${apiBaseUrl}/api/user/api-key`,
+  documentation: `${apiBaseUrl}/api/swagger/index.html`,
+  todayUsage: `${apiBaseUrl}/api/user/api-key/usage/today`,
+  totalUsage: `${apiBaseUrl}/api/user/api-key/usage/total`,
 };
 
 export const apiExamples = {

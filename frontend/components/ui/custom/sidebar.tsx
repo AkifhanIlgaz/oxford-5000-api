@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { apiEndpoints } from '@/constants/api';
 import { appInfo } from '@/constants/common';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -74,7 +75,7 @@ const AppSidebar = () => {
                       className={cn(
                         'w-full rounded-lg px-4 py-2 text-sm font-medium hover:bg-muted',
                         pathname === item.url &&
-                          'bg-primary text-primary-foreground hover:bg-primary/90'
+                          'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-white'
                       )}
                     >
                       <Link href={item.url} className="text-slate-200">
@@ -99,7 +100,12 @@ const AppSidebar = () => {
                   asChild
                   className="w-full py-6 rounded-2xl inline-flex items-center justify-center relative box-border cursor-pointer select-none appearance-none font-semibold font-inter text-sm leading-7 min-w-[64px] text-[#f6f6f6] hover:text-[#f6f6f6] bg-[#5F61F2] shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),0_2px_2px_0_rgba(0,0,0,0.14),0_1px_5px_0_rgba(0,0,0,0.12)]  transition-all duration-250 hover:bg-[rgb(67,56,202)]"
                 >
-                  <Link href="/documentation">
+                  <Link
+                    href={apiEndpoints.documentation}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
                     <DocumentationIcon />
                     Documentation
                   </Link>

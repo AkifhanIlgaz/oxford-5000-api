@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { apiEndpoints } from '@/constants/api';
 import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Badge } from "@/components/ui/badge";
 
 type ApiKeyData = {
   key: string;
@@ -81,11 +81,8 @@ export default function ApiKeysPage() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response);
 
       const data: ApiKeyResponse = await response.json();
-
-      console.log(data);
 
       setApiKey(data.result.apiKey.key);
       setKeyMetadata({
@@ -132,9 +129,7 @@ export default function ApiKeysPage() {
         setError(data.message || 'Failed to revoke API key');
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to revoke API key'
-      );
+      setError(err instanceof Error ? err.message : 'Failed to revoke API key');
     }
   };
 
@@ -185,53 +180,55 @@ export default function ApiKeysPage() {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-slate-100 mb-8">API Keys</h1>
 
-        <Card className="bg-slate-900 border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-slate-100">Your API Key</CardTitle>
-            <CardDescription>
-              Use this key to authenticate your API requests
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Input
-                type={isVisible ? 'text' : 'password'}
-                value={apiKey}
-                readOnly
-                className="font-mono bg-slate-950 border-slate-800 text-slate-100"
-              />
-              <Button variant="outline" onClick={toggleVisibility}>
-                {isVisible ? 'Hide' : 'Show'}
-              </Button>
-              <Button variant="default" onClick={copyToClipboard}>
-                {copied ? <Check className="h-4 w-4" /> : 'Copy'}
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge 
-                variant="secondary" 
-                className="bg-blue-900/50 hover:bg-blue-900/70 text-blue-200 border border-blue-800"
-              >
-                Created {keyMetadata.createdAt.toLocaleDateString()}
-              </Badge>
-              <Badge 
-                variant="secondary" 
-                className="bg-purple-900/50 hover:bg-purple-900/70 text-purple-200 border border-purple-800"
-              >
-                {keyMetadata.totalUsage.toLocaleString()} requests
-              </Badge>
-            </div>
-            <div className="pt-4">
-              <Button 
-                variant="destructive" 
-                onClick={revokeApiKey}
-                className="bg-red-900 hover:bg-red-800"
-              >
-                Revoke API Key
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="text-slate-100">Your API Key</CardTitle>
+              <CardDescription>
+                Use this key to authenticate your API requests
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  type={isVisible ? 'text' : 'password'}
+                  value={apiKey}
+                  readOnly
+                  className="font-mono bg-slate-950 border-slate-800 text-slate-100"
+                />
+                <Button variant="outline" onClick={toggleVisibility}>
+                  {isVisible ? 'Hide' : 'Show'}
+                </Button>
+                <Button variant="default" onClick={copyToClipboard}>
+                  {copied ? <Check className="h-4 w-4" /> : 'Copy'}
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-900/50 hover:bg-blue-900/70 text-blue-200 border border-blue-800"
+                >
+                  Created {keyMetadata.createdAt.toLocaleDateString()}
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="bg-purple-900/50 hover:bg-purple-900/70 text-purple-200 border border-purple-800"
+                >
+                  {keyMetadata.totalUsage.toLocaleString()} requests
+                </Badge>
+              </div>
+              <div className="pt-4">
+                <Button
+                  variant="destructive"
+                  onClick={revokeApiKey}
+                  className="bg-red-900 hover:bg-red-800"
+                >
+                  Revoke API Key
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
