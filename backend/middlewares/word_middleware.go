@@ -26,6 +26,8 @@ func NewWordMiddleware(wordService services.WordService, userService services.Us
 
 func (m *WordMiddleware) TrackUsage() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		uid, _ := ctx.Get("uid")
+
 		key := ctx.Query(api.ApiKeyParam)
 		if key == "" {
 			response.WithError(ctx, http.StatusBadRequest, message.ApiKeyRequired)
@@ -38,7 +40,7 @@ func (m *WordMiddleware) TrackUsage() gin.HandlerFunc {
 			return
 		}
 
-		dailyUsage, err := m.userService.IncrementUsage(apiKeyDoc.Key)
+		dailyUsage, err := m.userService.IncrementUsage(uid.(string), apiKeyDoc.Key)
 		if err != nil {
 			response.WithError(ctx, http.StatusInternalServerError, message.ApiKeyError)
 			return

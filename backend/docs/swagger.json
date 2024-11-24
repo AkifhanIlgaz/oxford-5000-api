@@ -269,6 +269,74 @@
                 }
             }
         },
+        "/user/usage/today": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the today usage for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usage"
+                ],
+                "summary": "Get Today Usage",
+                "responses": {
+                    "200": {
+                        "description": "Today usage retrieved successfully",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/usage/total": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the total usage for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usage"
+                ],
+                "summary": "Get Total Usage",
+                "responses": {
+                    "200": {
+                        "description": "Total usage retrieved successfully",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/word/{word}": {
             "get": {
                 "description": "Retrieves detailed information about a word including definitions, examples, and usage",
@@ -340,9 +408,6 @@
                     "type": "string"
                 },
                 "key": {
-                    "type": "string"
-                },
-                "name": {
                     "type": "string"
                 },
                 "totalUsage": {

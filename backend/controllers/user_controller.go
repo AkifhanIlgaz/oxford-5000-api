@@ -32,13 +32,15 @@ func NewUserController(userService services.UserService, userMiddleware middlewa
 
 func (controller UserController) SetupRoutes(rg *gin.RouterGroup) {
 	router := rg.Group(UserPath)
-	router.Use(controller.userMiddleware.AuthenticateUser())
 
 	apiKey := router.Group(ApiKeyPath)
+	apiKey.Use(controller.userMiddleware.AuthenticateUser())
 
 	apiKey.GET("", controller.GetAPIKey)
 	apiKey.POST("", controller.GenerateAPIKey)
 	apiKey.DELETE("", controller.RevokeAPIKey)
+	apiKey.GET("/usage/today", controller.GetTodayUsage)
+	apiKey.GET("/usage/total", controller.GetTotalUsage)
 }
 
 // @Summary Get API Key
@@ -57,7 +59,9 @@ func (controller UserController) GetAPIKey(ctx *gin.Context) {
 	apiKey, err := controller.userService.GetApiKey(uid)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			response.WithError(ctx, http.StatusNotFound, "No API key found for this user")
+			response.WithSuccess(ctx, http.StatusOK, message.ApiKeyRetrieved, models.APIKeyResponse{
+				APIKey: nil,
+			})
 			return
 		}
 		log.Println(err.Error())
@@ -82,9 +86,8 @@ func (controller UserController) GetAPIKey(ctx *gin.Context) {
 // @Router /user/api-key [post]
 func (controller UserController) GenerateAPIKey(ctx *gin.Context) {
 	uid := ctx.GetString(api.UidParam)
-	name := ctx.Query(api.NameParam)
 
-	apiKey, err := controller.userService.CreateApiKey(uid, name)
+	apiKey, err := controller.userService.CreateApiKey(uid)
 	if err != nil {
 		log.Println(err.Error())
 		response.WithError(ctx, http.StatusInternalServerError, message.ApiKeyError)
@@ -115,4 +118,52 @@ func (controller UserController) RevokeAPIKey(ctx *gin.Context) {
 	}
 
 	response.WithSuccess(ctx, http.StatusOK, message.ApiKeyDeleted, nil)
+}
+
+// @Summary Get Today Usage
+// @Description Retrieves the today usage for the authenticated user
+// @Tags Usage
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} gin.H "Today usage retrieved successfully"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /user/api-key/usage/today [get]
+func (controller UserController) GetTodayUsage(ctx *gin.Context) {
+	uid := ctx.GetString(api.UidParam)
+
+	usage, err := controller.userService.GetTodayUsage(uid)
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusInternalServerError, message.ApiKeyError)
+		return
+	}
+
+	response.WithSuccess(ctx, http.StatusOK, message.UsageRetrieved, gin.H{
+		"usage": usage,
+	})
+}
+
+// @Summary Get Total Usage
+// @Description Retrieves the total usage for the authenticated user
+// @Tags Usage
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} gin.H "Total usage retrieved successfully"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /user/api-key/usage/total [get]
+func (controller UserController) GetTotalUsage(ctx *gin.Context) {
+	uid := ctx.GetString(api.UidParam)
+
+	usage, err := controller.userService.GetTotalUsage(uid)
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusInternalServerError, message.ApiKeyError)
+		return
+	}
+
+	response.WithSuccess(ctx, http.StatusOK, message.UsageRetrieved, gin.H{
+		"usage": usage,
+	})
 }

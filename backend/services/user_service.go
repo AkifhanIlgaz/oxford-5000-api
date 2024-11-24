@@ -63,7 +63,7 @@ func NewUserService(ctx context.Context, mongoDatabase *mongo.Database) (UserSer
 }
 
 // CreateApiKey generates and stores a new API key for the given user ID
-func (s *UserService) CreateApiKey(uid, name string) (*models.APIKey, error) {
+func (s *UserService) CreateApiKey(uid string) (*models.APIKey, error) {
 	apiKey, err := apikey.GenerateAPIKey()
 	if err != nil {
 		return nil, fmt.Errorf("generate api key: %w", err)
@@ -71,7 +71,6 @@ func (s *UserService) CreateApiKey(uid, name string) (*models.APIKey, error) {
 
 	apiKeyDoc := models.APIKey{
 		Uid:        uid,
-		Name:       name,
 		Key:        apiKey,
 		TotalUsage: 0,
 		CreatedAt:  time.Now(),
@@ -132,8 +131,8 @@ func (s *UserService) GetByKey(key string) (*models.APIKey, error) {
 	return &apiKey, nil
 }
 
-func (s *UserService) IncrementUsage(key string) (int, error) {
-	dailyUsage, err := s.incrementDailyUsage(key)
+func (s *UserService) IncrementUsage(uid, key string) (int, error) {
+	dailyUsage, err := s.incrementDailyUsage(uid, key)
 	if err != nil {
 		return 0, fmt.Errorf("increment daily usage: %w", err)
 	}
@@ -146,13 +145,14 @@ func (s *UserService) IncrementUsage(key string) (int, error) {
 	return dailyUsage, nil
 }
 
-func (s *UserService) incrementDailyUsage(key string) (int, error) {
+func (s *UserService) incrementDailyUsage(uid, 	key string) (int, error) {
 	// Get today's date at midnight (00:00:00)
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 
 	filter := bson.M{
 		"key":  key,
+		"uid":  uid,
 		"date": today,
 	}
 
@@ -188,4 +188,36 @@ func (s *UserService) incrementTotalUsage(key string) error {
 	}
 
 	return nil
+}
+
+func (s *UserService) GetTodayUsage(uid string) (int, error) {
+	now := time.Now()
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+
+	filter := bson.M{
+		"uid":  uid,
+		"date": today,
+	}
+
+	var result models.DailyUsageEntry
+	err := s.usageCollection.FindOne(s.ctx, filter).Decode(&result)
+	if err != nil {
+		return 0, fmt.Errorf("get today usage: %w", err)
+	}
+
+	return result.Usage, nil
+}
+
+func (s *UserService) GetTotalUsage(uid string) (int, error) {
+	filter := bson.M{
+		"uid": uid,
+	}
+
+	var result models.APIKey
+	err := s.apiKeyCollection.FindOne(s.ctx, filter).Decode(&result)
+	if err != nil {
+		return 0, fmt.Errorf("get total usage: %w", err)
+	}
+
+	return result.TotalUsage, nil
 }

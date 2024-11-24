@@ -6,8 +6,6 @@ definitions:
         type: string
       key:
         type: string
-      name:
-        type: string
       totalUsage:
         type: integer
       uid:
@@ -290,6 +288,48 @@ paths:
       summary: Create API Key
       tags:
       - API Keys
+  /user/usage/today:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the today usage for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Today usage retrieved successfully
+          schema:
+            type: integer
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: Get Today Usage
+      tags:
+      - Usage
+  /user/usage/total:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the total usage for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Total usage retrieved successfully
+          schema:
+            type: integer
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: Get Total Usage
+      tags:
+      - Usage
   /word/{word}:
     get:
       consumes:
