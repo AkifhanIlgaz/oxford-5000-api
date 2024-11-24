@@ -82,6 +82,52 @@ export default function Home() {
         </Tabs>
       </section>
 
+      {/* Pricing Section */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-8 text-white">
+          Pricing
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle>Free Plan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="text-3xl font-bold">$0</div>
+                <ul className="space-y-2">
+                  <li>✓ 100 requests per day</li>
+                  <li>✓ Basic API access</li>
+                  <li>✓ Community support</li>
+                </ul>
+                <Button className="w-full" asChild>
+                  <a href={routes.register}>Get Started</a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Pro Plan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="text-3xl font-bold">$49/month</div>
+                <ul className="space-y-2">
+                  <li>✓ 10,000 requests per day</li>
+                  <li>✓ Priority API access</li>
+                  <li>✓ Email support</li>
+                </ul>
+                <Button className="w-full" asChild>
+                  <a href={routes.register}>Upgrade Now</a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Getting Started Steps */}
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold text-center mb-8 text-white">
