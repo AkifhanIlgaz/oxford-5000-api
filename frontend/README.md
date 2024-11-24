@@ -19,8 +19,7 @@ A modern web application for accessing the Oxford 5000™ API, built with Next.j
 - **UI Components:** shadcn/ui
 - **State Management:** React Hooks
 - **Forms:** React Hook Form
-- **Charts:** Recharts
-- **Icons:** Lucide React
+
 
 ## Getting Started
 

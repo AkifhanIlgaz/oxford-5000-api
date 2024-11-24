@@ -46,7 +46,7 @@ A full-stack application providing programmatic access to Oxford 5000 word defin
 - Next.js 14
 - TypeScript
 - Tailwind CSS
-- Radix UI Components
+- shadcn/ui Components
 - React Hook Form
 
 ## Getting Started
