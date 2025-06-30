@@ -1,22 +1,6 @@
 package models
 
-import (
-	"fmt"
-	"net/mail"
-)
-
 type AuthRequest struct {
-	Email    string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required" validate:"email"`
 	Password string `json:"password" binding:"required,min=6"`
 }
-
-func (req AuthRequest) Validate() error {
-	_, err := mail.ParseAddress(req.Email)
-	if err != nil {
-		return fmt.Errorf("validate signup request: %w", err)
-	}
-
-	return nil
-}
-
-

@@ -46,17 +46,25 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer func() {
 		if err = mongoClient.Disconnect(ctx); err != nil {
 			panic(err)
 		}
 	}()
-
 	mongoDatabase := mongoClient.Database(db.DatabaseName)
 
+	redisClient, err := db.ConnectToRedis(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err = redisClient.Close(); err != nil {
+			log.Fatal("Failed to close Redis client:", err)
+		}
+	}()
+
 	wordService := services.NewWordService(ctx, mongoDatabase)
-	tokenService := services.NewTokenService(config)
+	tokenService := services.NewTokenService(config, redisClient)
 
 	userService, err := services.NewUserService(ctx, mongoDatabase)
 	if err != nil {
@@ -97,5 +105,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-

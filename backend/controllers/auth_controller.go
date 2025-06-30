@@ -54,12 +54,6 @@ func (controller AuthController) Register(ctx *gin.Context) {
 		return
 	}
 
-	if err := req.Validate(); err != nil {
-		log.Println(err.Error())
-		response.WithError(ctx, http.StatusBadRequest, err.Error())
-		return
-	}
-
 	uid, err := controller.authService.Create(req)
 	if err != nil {
 		log.Println(err.Error())
@@ -97,12 +91,6 @@ func (controller AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	if err := req.Validate(); err != nil {
-		log.Println(err.Error())
-		response.WithError(ctx, http.StatusBadRequest, err.Error())
-		return
-	}
-
 	uid, err := controller.authService.AuthenticateUser(req)
 	if err != nil {
 		log.Println(err.Error())
@@ -137,6 +125,18 @@ func (controller AuthController) RefreshToken(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		log.Println(err.Error())
 		response.WithError(ctx, http.StatusBadRequest, message.MissingField)
+		return
+	}
+
+	isExpired, err := controller.tokenService.IsRefreshTokenExpired(req.RefreshToken)
+	if err != nil {
+		log.Println(err.Error())
+		response.WithError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	if isExpired {
+		response.WithError(ctx, http.StatusUnauthorized, "refresh token expired")
 		return
 	}
 

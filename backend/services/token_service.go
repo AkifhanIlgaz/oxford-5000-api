@@ -8,18 +8,21 @@ import (
 
 	"github.com/AkifhanIlgaz/dictionary-api/config"
 	"github.com/AkifhanIlgaz/dictionary-api/models"
+	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt/v4"
 )
 
 // TokenService handles JWT token generation and parsing operations
 type TokenService struct {
+	client *redis.Client
 	config config.Config
 }
 
 // NewTokenService creates a new TokenService instance with the provided configuration
-func NewTokenService(config config.Config) TokenService {
+func NewTokenService(config config.Config, client *redis.Client) TokenService {
 	return TokenService{
 		config: config,
+		client: client,
 	}
 }
 
@@ -36,10 +39,29 @@ func (service TokenService) CreateTokens(uid string) (models.Tokens, error) {
 		return models.Tokens{}, fmt.Errorf("create tokens: %w", err)
 	}
 
+	err = service.client.Set(service.client.Context(), "refresh_tokens:"+refreshToken, uid, time.Duration(service.config.RefreshTokenExpiry)*time.Hour).Err()
+	if err != nil {
+		return models.Tokens{}, fmt.Errorf("store refresh token on redis: %w", err)
+	}
+
 	return models.Tokens{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
+}
+
+func (service TokenService) IsRefreshTokenExpired(token string) (bool, error) {
+	// Check if the token exists in Redis
+	_, err := service.client.Get(service.client.Context(), "refresh_tokens:"+token).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return false, errors.New("refresh token not found")
+		}
+		return false, fmt.Errorf("check refresh token in redis: %w", err)
+	}
+
+	// If found, return the user ID
+	return true, nil
 }
 
 // generateToken creates a specific type of JWT token (access or refresh) for a given user ID

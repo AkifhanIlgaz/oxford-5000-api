@@ -20,6 +20,8 @@ type Config struct {
 	RefreshTokenExpiry     int    `mapstructure:"REFRESH_TOKEN_EXPIRY_HOUR"`
 
 	Mode string
+
+	RedisConnectionString string `mapstructure:"REDIS_CONNECTION_STRING"`
 }
 
 func (c *Config) Validate() error {

@@ -9,6 +9,7 @@ import (
 	"github.com/AkifhanIlgaz/dictionary-api/utils/crypto"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/db"
 	"github.com/AkifhanIlgaz/dictionary-api/utils/message"
+	plan "github.com/AkifhanIlgaz/dictionary-api/utils/plans"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,7 +42,7 @@ func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, e
 
 	userToCreate := models.User{
 		Email:        req.Email,
-		Plan:         "free",
+		Plan:         string(plan.FreePlan),
 		PasswordHash: passwordHash,
 	}
 
@@ -58,7 +59,6 @@ func (service AuthService) Create(req models.AuthRequest) (primitive.ObjectID, e
 // and verifies the password hash.
 // Returns the user's ObjectID if authentication succeeds, or an error if credentials are invalid.
 func (service AuthService) AuthenticateUser(req models.AuthRequest) (primitive.ObjectID, error) {
-
 	filter := bson.M{
 		"email": req.Email,
 	}
